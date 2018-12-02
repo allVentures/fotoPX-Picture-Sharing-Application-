@@ -8,6 +8,7 @@ from fotoPXapp.models import User, Regions
 from PIL import Image
 
 
+
 # -----------------------------USER-----------------------------
 class user_registration(View):
     def get(self, request):
@@ -24,15 +25,19 @@ class user_registration(View):
             return HttpResponse(dumps(response_data), content_type="application/json")
 
     def post(self, request):
-        # voId = request.POST
-        # form = AddStudentForm(request.POST)
-        print("ddd")
         voId = request.POST.get('voivodeship_id')
         print(voId)
-
-
-            # new_student.first_name = form.cleaned_data['name']
 
         return None
 
 # -----------------------------PICTURES-----------------------------
+
+
+
+# -----------------------COMMENTS / RATINGS-----------------------------
+
+
+
+#----------------------------TAGS--------------------------------------
+
+
