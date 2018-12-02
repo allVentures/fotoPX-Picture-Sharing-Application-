@@ -1,6 +1,13 @@
 from django.contrib.auth.models import User
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
     PictureRating, PictureTags, Regions, Followers
+from faker import Faker, Factory
+from faker.providers import date_time, lorem, person, phone_number
+import random
+
+# -------------------------------------------------------------------------------------------------------------------
+# https://faker.readthedocs.io/en/master/locales/pl_PL.html
+
 
 # User.objects.create_superuser(
 #     username="allphoto",
@@ -30,16 +37,75 @@ from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATIN
 #
 # )
 
+# --------------------------------FAKER-------------------------------------------
+
+fake = Faker('pl_PL')
+
+email = fake.email()
+first_name = fake.first_name()
+last_name = fake.last_name()
+tel = fake.phone_number()
+username_base = 'user000'
+url = fake.url(schemes=None)
+skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
+instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+about = fake.text(max_nb_chars=500, ext_word_list=None)
+
+# ----- Create Users-------
+# for x in range(1, 99):
+#     email = fake.email()
+#     first_name = fake.first_name()
+#     last_name = fake.last_name()
+#     User.objects.create_user(
+#         username=username_base + str(x),
+#         password="user1234",
+#         first_name=first_name,
+#         last_name=last_name,
+#         email=email,
+#     )
+
+# ----- Create Extended User Info-------
+
+# for x in range (227,244):
+#     tel = fake.phone_number()
+#     skype = fake.first_name() + "." + fake.last_name() + "."+str(random.randint(1,999))
+#     instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+#     facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+#     url = fake.url(schemes=None)
+#     about = fake.text(max_nb_chars=500, ext_word_list=None)
+#     ExtendUser.objects.create(
+#         email_privacy=2,
+#         phone_number=tel,
+#         phone_privacy=2,
+#         skype=skype,
+#         instagram_id=instagram,
+#         instagram_privacy=2,
+#         facebook_id=facebook,
+#         facebook_privacy=2,
+#         website=url,
+#         website_privacy=2,
+#         about_me=about,
+#         region_id=1998,
+#         user_id=x,
+#     )
 
 
+# # ----- Create Followers-------
+# for x in range(146, 243):
+#     random_follower = random.randint(146, 243)
+#     if x!=random_follower:
+#         Followers.objects.create(
+#             following_id=x,
+#             follower_id=random_follower,
+#         )
 
 
-
-
-
-
-
-
+# # ----- Create Picture Categories-------
+for x in range(1,1000):
+    PictureCategory.objects.create(
+        category=fake.word(ext_word_list=None)
+    )
 
 
 

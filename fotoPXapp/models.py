@@ -27,7 +27,7 @@ class ExtendUser(models.Model):
     avatar_picture = models.ImageField(null=True)
     region = models.ForeignKey('Regions', on_delete=models.SET_NULL, null=True)
     email_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    phone_number = models.CharField(max_length=14, null=True)
+    phone_number = models.CharField(max_length=20, null=True)
     phone_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
     skype = models.CharField(max_length=64, null=True)
     skype_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
@@ -43,12 +43,13 @@ class ExtendUser(models.Model):
 
 
 class Followers(models.Model):
-    follower = models.ManyToManyField(User)
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
     following_date = models.DateTimeField(auto_now_add=True)
 
 
 class PictureCategory(models.Model):
-    category = models.CharField(max_length=64)
+    category = models.CharField(max_length=64, unique=True)
 
 
 class Picture(models.Model):
@@ -82,16 +83,15 @@ class PictureComment(models.Model):
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_date = models.DateTimeField(auto_now_add=True)
 
+
 class Tags(models.Model):
-    tag = models.CharField(max_length=64)
+    tag = models.CharField(max_length=64, unique=True)
+
 
 class PictureTags(models.Model):
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     picture_tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
     tag_date = models.DateTimeField(auto_now_add=True)
-
-
-
 
 # add later:
 # - url slugr for Pictures/Tags/Users
