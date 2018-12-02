@@ -1,0 +1,158 @@
+html {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+
+body {
+    display: table-cell;
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+    background-color: #eeeeee;
+    color: #28283e;
+}
+
+.headerRooms {
+    width: 80%;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.websiteHeader {
+    background-color: #003166;
+    width: 100%;
+}
+
+.formNumbers {
+    width: 90px;
+}
+
+.shortFormsFields {
+    width: 50%;
+}
+
+#logo {
+    font-family: 'Lato', sans-serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: #eeeeee;
+    padding: 3px 0 5px 0;
+    margin: 0 10px 0 10px;
+}
+
+.mainContainer {
+    width: 80%;
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 100%;
+    border-left: 2px gray solid;
+    border-right: 2px gray solid;
+    padding: 15px 15px;
+    background-color: whitesmoke;
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.personDescription {
+    width: 50%;
+}
+
+.centerTableCol {
+    text-align: center;
+}
+
+.h3Colors {
+    background-color: #004a99;
+    color: white;
+    padding: 10px 15px;
+}
+
+.h4Colors {
+    background-color: #0063cc;
+    color: white;
+    padding: 10px 15px;
+}
+
+#groupsSelection {
+    width: 400px;
+    min-height: 100px;
+}
+
+.tdAlignRight {
+    text-align: right;
+}
+
+.pGroupsHeader {
+    display: inline;
+    line-height: 40px;
+}
+
+.tdAvatar {
+    width: 400px;
+    max-height: 400px;
+    display: block;
+    overflow: hidden;
+}
+
+.tdAvatar img {
+}
+
+.thAvatar {
+    width: 400px;
+}
+
+.col20 {
+    width: 20%;
+}
+
+.col60 {
+    width: 60%;
+}
+
+.col40 {
+    width: 40%;
+}
+
+.userDetailsDiv {
+    display: inline-block;
+    vertical-align: top;
+    width: 69.5%;
+}
+
+.divAvatar {
+    display: inline-block;
+    height: 400px;
+    width: 30%;
+    overflow: hidden;
+    position: relative;
+}
+
+.divAvatar img {
+    position: absolute;
+    object-fit: cover;
+}
+
+.noPicture {
+    width: 100%;
+    height: 100%;
+    border: rgb(222, 226, 230) 1px solid;
+    margin: 0;
+    padding: 0;
+    display: table;
+}
+
+.noPicture i {
+    color: rgb(222, 226, 230);
+    font-size: 270px;
+    align-content: baseline;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
