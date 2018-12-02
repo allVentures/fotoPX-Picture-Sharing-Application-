@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
-    PictureRating, PictureTags, Regions, Followers
+    PictureRating, PictureTags, Regions, Followers, Tags
 from faker import Faker, Factory
 from faker.providers import date_time, lorem, person, phone_number
 import random
@@ -39,18 +39,18 @@ import random
 
 # --------------------------------FAKER-------------------------------------------
 
-fake = Faker('pl_PL')
-
-email = fake.email()
-first_name = fake.first_name()
-last_name = fake.last_name()
-tel = fake.phone_number()
-username_base = 'user000'
-url = fake.url(schemes=None)
-skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
-instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-about = fake.text(max_nb_chars=500, ext_word_list=None)
+# fake = Faker('pl_PL')
+#
+# email = fake.email()
+# first_name = fake.first_name()
+# last_name = fake.last_name()
+# tel = fake.phone_number()
+# username_base = 'user000'
+# url = fake.url(schemes=None)
+# skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
+# instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+# facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+# about = fake.text(max_nb_chars=500, ext_word_list=None)
 
 # ----- Create Users-------
 # for x in range(1, 99):
@@ -101,11 +101,20 @@ about = fake.text(max_nb_chars=500, ext_word_list=None)
 #         )
 
 
+# # ----- Create Picture Tags-------
+# for x in range(1,200):
+#     new_tag=fake.word(ext_word_list=None);
+#     if not Tags.objects.filter(tag__contains=new_tag):
+#         Tags.objects.create(tag=new_tag)
+
+
 # # ----- Create Picture Categories-------
-for x in range(1,1000):
-    PictureCategory.objects.create(
-        category=fake.word(ext_word_list=None)
-    )
+
+# - manual
+
+
+
+
 
 
 

@@ -41,6 +41,15 @@ class ExtendUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     joined = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return "%s %s" % (self.user.first_name, self.user.last_name)
+
+    def name(self):
+        return "%s %s" % (self.user.first_name, self.user.last_name)
+
+    def city(self):
+        return "%s" % (self.region.city)
+
 
 class Followers(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
@@ -51,10 +60,12 @@ class Followers(models.Model):
 class PictureCategory(models.Model):
     category = models.CharField(max_length=64, unique=True)
 
+    def __str__(self):
+        return "%s" % (self.category)
+
 
 class Picture(models.Model):
     picture = models.ImageField()
-    pic_thumb = models.ImageField()
     title = models.CharField(max_length=160, null=True)
     description = models.TextField()
     views = models.IntegerField(null=True, default=0)
@@ -68,6 +79,12 @@ class Picture(models.Model):
     ISO = models.IntegerField(null=True)
     f_stop = models.FloatField(null=True)
     shutter_speed = models.FloatField(null=True)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def author(self):
+        return "%s %s" % (self.picture_user_id.first_name, self.picture_user_id.last_name )
 
 
 class PictureRating(models.Model):
@@ -86,6 +103,9 @@ class PictureComment(models.Model):
 
 class Tags(models.Model):
     tag = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return "%s" % (self.tag)
 
 
 class PictureTags(models.Model):
