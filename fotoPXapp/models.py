@@ -74,7 +74,7 @@ class Picture(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     # EXIF data for picture
     camera_make = models.CharField(max_length=64, null=True)
-    lens = models.CharField(max_length=64, null=True)
+    lens = models.CharField(max_length=128, null=True)
     focal_length = models.IntegerField(null=True)
     ISO = models.IntegerField(null=True)
     f_stop = models.FloatField(null=True)

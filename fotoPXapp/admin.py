@@ -7,12 +7,11 @@ from jet.admin import CompactInline
 
 class PicturesAdmin(admin.ModelAdmin):
     pass
+    list_display = ('title', 'views', 'picture_category_id', 'author', 'picture',)
+    # ordering = ['id']
+    list_filter = ('title', 'picture_user_id_id')
     # fields = ('photo', 'name', 'owner')
     # readonly_fields = ('grades_list', )
-    list_display = ('title', 'picture_category_id', 'author', 'picture',)
-    # ordering = ['id']
-    # list_filter = ('first_name', 'last_name', 'school_class')
-    # actions = [remove_grades, ]
 
 
 admin.site.register(Picture, PicturesAdmin)

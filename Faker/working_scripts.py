@@ -39,8 +39,8 @@ import random
 
 # --------------------------------FAKER-------------------------------------------
 
-# fake = Faker('pl_PL')
-#
+fake = Faker('pl_PL')
+
 # email = fake.email()
 # first_name = fake.first_name()
 # last_name = fake.last_name()
@@ -109,62 +109,105 @@ import random
 
 
 # # ----- Create Picture Categories-------
-
 # - manual
 
-
-
-
-
-
-
-
-
-
-# students=Departament.objects.get(id=3).student_set.all()
-# for x in students:
-#     print(x.name)
+# # ----- Add Pictures -------
 #
-# art=Article.objects.get(id=5).category.all()
-# for x in art:
-#     print(x.name)
+# users_id = [150, 167, 187, 207, 212, 229, 158, 172, 196, 191]
+# ISO = [100, 200, 400, 800, 1600, 3200, 6400, 50, 320, 250]
+# f_stop = [1.4, 1.8, 2, 3.5, 4, 5.6, 8, 11, 16, 22]
+# camera = ["Nikon", "Canon", "Sony", "Minolta", "Nikon", "Canon", "Sony", "Minolta", "Canon", "Sony"]
+# lens = ["Canon EF-S 10-18mm", "Canon EF-S 18-135mm f/3.5-5.6", "150-600mm F5-6.3 SSM",
+#         "Canon EF-S 10-18mm", "Canon EF-S 18-135mm f/3.5-5.6", "150-600mm F5-6.3 SSM",
+#         "Canon EF-S 10-18mm", "Canon EF-S 18-135mm f/3.5-5.6", "150-600mm F5-6.3 SSM",
+#         "Canon EF-S 10-18mm", "Canon EF-S 18-135mm f/3.5-5.6", "150-600mm F5-6.3 SSM",
+#         "Canon EF-S 10-18mm", "Canon EF-S 18-135mm f/3.5-5.6", "150-600mm F5-6.3 SSM", ]
+# shutter = [1 / 1000, 1 / 500, 1 / 250, 1 / 125, 1 / 60, 1 / 30, 1 / 15, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8]
+# focal = [12, 18, 24, 35, 50, 70, 85, 100, 105, 150, 180, 300]
 #
-# cat=Category.objects.get(id=3).article_set.all()
-# for x in cat:
-#     print(x.title)
+# user_counter = 80
+# for y in range(1, 2):
+#     usr_id = users_id[y] + 6
+#     iso_i = ISO[y]
+#     f = f_stop[y]
+#     cam = camera[y]
+#     lenS = lens[y]
+#     shutt = shutter[y]
+#     mm = focal[y]
+#     user_counter += 10
+#     for x in range(user_counter, user_counter + 10):
+#         Picture.objects.create(
+#             picture='portret_0' + str(x) + '.jpg',
+#             title=fake.text(max_nb_chars=110, ext_word_list=None),
+#             description=fake.text(max_nb_chars=180, ext_word_list=None),
+#             picture_category_id_id=4,
+#             picture_user_id_id=usr_id,
+#             camera_make=cam,
+#             lens=lenS,
+#             focal_length=mm,
+#             ISO=iso_i,
+#             f_stop=f,
+#             shutter_speed=shutt,
+#         )
 
-# st=Student.objects.filter(dep_id=3)
-# for x in st:
-#     x.dep_id=1
-#     x.save()
+# ----- Picture Comments-------
+# for each picture we generate 15 comments from 15 random users
 
-# stud=Student.objects.get(id=2)
-# stud.dep_id=None
-# stud.save()
-# art=Article.objects.get(id=5)
-# cat=Category.objects.get(id=4)
-# art.category.remove(cat)
+# comment = fake.text(max_nb_chars=150, ext_word_list=None)
+#
+# all_users = User.objects.all()
+# all_users_count = all_users.count()
+#
+# all_pictures = Picture.objects.all()
+# all_pictures_count = all_pictures.count()
 
-# dep=Departament.objects.get(id=2)
-# dep_students=dep.student_set.all()
-# for x in dep_students:
-#     print(x.name)
+# for pic in all_pictures:
+#     for comm in range(1,16):
+#         f_comment = fake.text(max_nb_chars=150, ext_word_list=None)
+#         random_user = random.randint(1, all_users_count - 1)
+#         commenter = all_users[random_user].id
+#         PictureComment.objects.create(
+#             comment=f_comment,
+#             commenter_id=commenter,
+#             picture_id_id=pic.id,
+#         )
 
 
-# Room.objects.create(
-#     name="Sala Richard Wagner",
-#     capacity=15,
-#     projector=False,
-# )
+# ----- Picture Ratings-------
+# for each picture we generate 10 ratings from 10 random users
+# all_users = User.objects.all()
+# all_users_count = all_users.count()
+#
+# all_pictures = Picture.objects.all()
+# all_pictures_count = all_pictures.count()
+#
+# for pic in all_pictures:
+#     for rati in range(1,16):
+#         rating = random.randint(1,5)
+#         random_user = random.randint(1, all_users_count - 1)
+#         rater = all_users[random_user].id
+#         PictureRating.objects.create(
+#             rating=rating,
+#             picture_id_id=pic.id,
+#             rater_id=rater
+#         )
 
-# Booking.objects.create(
-#     booking_date="2018-12-06",
-#     room_id=3,
-#     comment="this is some comment xxxxx"
-# )
-
-# print(Booking.objects.filter(booking_date="2018-12-01"))
-
+# ----- Picture Tags-------
+# for each picture we generate 7 random tags
+# all_pictures = Picture.objects.all()
+# all_pictures_count = all_pictures.count()
+#
+# all_tags = Tags.objects.all()
+# all_tags_count = all_tags.count()
+#
+# for pic in all_pictures:
+#     for t in range(1, 8):
+#         random_t = random.randint(1, all_tags_count - 1)
+#         random_tag = all_tags[random_t].id
+#         PictureTags.objects.create(
+#             picture_tag_id=random_tag,
+#             picture_id_id=pic.id,
+#         )
 
 # odpalamy w konsoli
 # python3 ../manage.py shell < working_scripts.py
