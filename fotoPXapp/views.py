@@ -4,9 +4,16 @@ from django.http import HttpResponse, HttpRequest, Http404
 from django.conf import settings
 from os import path, rename, remove
 from json import dumps
-from fotoPXapp.models import User, Regions
+from fotoPXapp.models import User, ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
+    PictureComment, Followers, Tags
 from PIL import Image
 
+
+# ------------MAIN PAGE, HEADER , FOOTER-----------------------
+class MainPage(View):
+    def get(self, request):
+        ctx = {}
+        return render(request, "main_page.html", ctx)
 
 
 # -----------------------------USER-----------------------------
@@ -30,14 +37,16 @@ class user_registration(View):
 
         return None
 
+
 # -----------------------------PICTURES-----------------------------
+class AllPictures(View):
+    def get(self, request):
+        all_pictures = Picture.objects.all()
 
-
+        ctx = {"pictures": all_pictures}
+        return render(request, "all_pictures.html", ctx)
 
 # -----------------------COMMENTS / RATINGS-----------------------------
 
 
-
-#----------------------------TAGS--------------------------------------
-
-
+# ----------------------------TAGS--------------------------------------

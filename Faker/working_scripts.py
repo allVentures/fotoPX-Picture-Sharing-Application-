@@ -41,16 +41,16 @@ import random
 
 fake = Faker('pl_PL')
 
-# email = fake.email()
-# first_name = fake.first_name()
-# last_name = fake.last_name()
-# tel = fake.phone_number()
-# username_base = 'user000'
-# url = fake.url(schemes=None)
-# skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
-# instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-# facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-# about = fake.text(max_nb_chars=500, ext_word_list=None)
+email = fake.email()
+first_name = fake.first_name()
+last_name = fake.last_name()
+tel = fake.phone_number()
+username_base = 'user000'
+url = fake.url(schemes=None)
+skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
+instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+about = fake.text(max_nb_chars=500, ext_word_list=None)
 
 # ----- Create Users-------
 # for x in range(1, 99):

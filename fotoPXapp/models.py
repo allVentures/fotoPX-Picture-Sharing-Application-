@@ -84,7 +84,7 @@ class Picture(models.Model):
         return "%s" % (self.title)
 
     def author(self):
-        return "%s %s" % (self.picture_user_id.first_name, self.picture_user_id.last_name )
+        return "%s %s" % (self.picture_user_id.first_name, self.picture_user_id.last_name)
 
 
 class PictureRating(models.Model):
@@ -99,6 +99,18 @@ class PictureComment(models.Model):
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_date = models.DateTimeField(auto_now_add=True)
+
+    # def commenter(self):
+    #     return self.commenter.username
+
+    def commenter_name(self):
+        return "%s %s" % (self.commenter.last_name, self.commenter.first_name)
+
+    def picture_title(self):
+        return "%s" % (self.picture_id)
+
+    def picture_ids(self):
+        return "%s" % (self.picture_id.id)
 
 
 class Tags(models.Model):

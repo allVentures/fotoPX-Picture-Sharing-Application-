@@ -130,7 +130,7 @@ STATIC_ROOT = 'fotoPXapp/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'fotoPXapp/media/'
 
-JET_DEFAULT_THEME = 'light-gray'
+# JET_DEFAULT_THEME = 'light-gray'
 # JET_SIDE_MENU_COMPACT = True
 JET_CHANGE_FORM_SIBLING_LINKS = True
 # JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'

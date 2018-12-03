@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.conf.urls import url
-from fotoPXapp.views import user_registration
+from fotoPXapp.views import user_registration, MainPage, AllPictures
 
 
 urlpatterns = [
@@ -26,7 +26,8 @@ urlpatterns = [
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     url(r'^admin/', admin.site.urls),
     url(r'^rejestracja', user_registration.as_view(), name="user_registration"),
-
+    url(r'^$', MainPage.as_view(), name="main_page"),
+    url(r'^nowe-zdjecia', AllPictures.as_view(), name="all_pictures"),
 
 ]
 

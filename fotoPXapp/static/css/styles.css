@@ -12,64 +12,88 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Lato', sans-serif;
-    background-color: #eeeeee;
+    background-color: #8B8574;
     color: #28283e;
 }
+
+/*Paleta:*/
+/*https://www.colourlovers.com/palette/1664726/The_Four_Horsemen*/
+
+/*-----Header-----*/
 
 .headerRooms {
     width: 80%;
     max-width: 1280px;
     margin: 0 auto;
+    padding: 0 16px;
+    font-weight: 500;
 }
 
 .websiteHeader {
-    background-color: #003166;
+    background-color: #574357;
     width: 100%;
 }
 
-.formNumbers {
-    width: 90px;
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.70);
 }
 
-.shortFormsFields {
-    width: 50%;
+.navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
+    color: rgba(255, 255, 255, 1);
 }
 
 #logo {
     font-family: 'Lato', sans-serif;
-    font-size: 30px;
+    font-size: 50px;
     font-weight: 900;
-    color: #eeeeee;
-    padding: 3px 0 5px 0;
+    color: #cbcb95;
     margin: 0 10px 0 10px;
 }
 
+/*-----Footer-----*/
+
+.websiteFooter {
+    background-color: #574357;
+    width: 100%;
+    /*min-height: 85px;*/
+}
+
+.footerRooms {
+    width: 90%;
+    max-width: 1280px;
+    margin: 0 auto;
+    font-weight: 500;
+    font-size: 14px;
+    color: papayawhip;
+    padding: 10px 15px;
+}
+
+/*-----Main Container-----*/
+
 .mainContainer {
-    width: 80%;
+    width: 90%;
     max-width: 1280px;
     margin: 0 auto;
     height: 100%;
-    border-left: 2px gray solid;
-    border-right: 2px gray solid;
     padding: 15px 15px;
-    background-color: whitesmoke;
+    background-color: #f2f2f2;
 }
+
+
+/*-------------------CHECK------------------------------------------------*/
 
 table {
     table-layout: fixed;
     word-wrap: break-word;
 }
 
-.personDescription {
-    width: 50%;
-}
 
 .centerTableCol {
     text-align: center;
 }
 
 .h3Colors {
-    background-color: #004a99;
+    background-color: #aba76c;
     color: white;
     padding: 10px 15px;
 }

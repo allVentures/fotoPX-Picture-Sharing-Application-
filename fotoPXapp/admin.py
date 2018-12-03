@@ -5,6 +5,11 @@ from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATIN
 from jet.admin import CompactInline
 
 
+# some CSS classsed for the (Jets) admin panel have been rewwritten:
+# /home/paul/.local/lib/python3.6/site-packages/jet/static/jet/css/themes/default/base.css
+
+
+
 class PicturesAdmin(admin.ModelAdmin):
     pass
     list_display = ('title', 'views', 'picture_category_id', 'author', 'picture',)
@@ -35,7 +40,8 @@ admin.site.register(PictureRating, PictureRatingAdmin)
 
 
 class PictureCommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('picture_title', 'picture_ids', 'commenter_name',)
+    list_filter = ('picture_id', 'commenter')
 
 
 admin.site.register(PictureComment, PictureCommentAdmin)
