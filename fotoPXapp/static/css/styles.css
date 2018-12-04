@@ -236,11 +236,11 @@ li.comments div {
     border-radius: 5px;
 }
 
-.pictureExif  {
+.pictureExif {
     border-left: lightgray solid 1px;
 }
 
-.pictureViewH4{
+.pictureViewH4 {
     width: 100%;
     /*background-color: #aba76c;*/
     color: gray;
@@ -248,3 +248,5 @@ li.comments div {
     margin: 0;
     text-align: left;
 }
+
+/*-----------------USER PAGE----------------------------*/

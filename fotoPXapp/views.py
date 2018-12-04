@@ -38,6 +38,12 @@ class user_registration(View):
 
         return None
 
+class user_page(View):
+    def get(self, request):
+        ctx = {}
+        return render(request, "user_page.html", ctx)
+
+
 
 # -----------------------------PICTURES-----------------------------
 # ----------All pictures & all pictures in categories--------

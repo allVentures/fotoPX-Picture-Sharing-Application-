@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.conf.urls import url
-from fotoPXapp.views import user_registration, MainPage, AllPictures, PictureView
+from fotoPXapp.views import user_registration, MainPage, AllPictures, PictureView, user_page
 
 urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
@@ -29,6 +29,7 @@ urlpatterns = [
     re_path(r'^kategoria/(?P<category_slug>[A-Za-z-]+)/(?P<id>[0-9]+)$', AllPictures.as_view(), name="all_pictures"),
     re_path(r'^(?P<category_slug>[A-Za-z-]+)/(?P<picture_slug>[A-Za-z0-9-]+)/(?P<id>[0-9]+)$', PictureView.as_view(),
         name="picture_view"),
+    re_path(r'^fotograf/(?P<voivodeship>[A-Za-z-]+)/(?P<name>[A-Za-z0-9-]+)/(?P<id>[0-9]+)$', user_page.as_view(), name="user_page"),
 
 ]
 
