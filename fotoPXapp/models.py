@@ -59,6 +59,7 @@ class Followers(models.Model):
 
 class PictureCategory(models.Model):
     category = models.CharField(max_length=64, unique=True)
+    category_slug = models.CharField(max_length=64, unique=True, null=True)
 
     def __str__(self):
         return "%s" % (self.category)
@@ -66,8 +67,12 @@ class PictureCategory(models.Model):
 
 class Picture(models.Model):
     picture = models.ImageField()
+    picture_thumbnail = models.ImageField(null=True)
+    th_width = models.IntegerField(null=True)
+    th_height = models.IntegerField(null=True)
     title = models.CharField(max_length=160, null=True)
     description = models.TextField()
+    pic_slug = models.CharField(max_length=160, null=True, unique=True)
     views = models.IntegerField(null=True, default=0)
     picture_category_id = models.ForeignKey(PictureCategory, on_delete=models.CASCADE)
     picture_user_id = models.ForeignKey(User, on_delete=models.CASCADE)

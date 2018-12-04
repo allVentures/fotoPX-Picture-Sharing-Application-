@@ -1,9 +1,15 @@
 from django.contrib.auth.models import User
+from os import path, rename, remove
+import re
+import unicodedata
+
+from fotoPX import settings
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
     PictureRating, PictureTags, Regions, Followers, Tags
 from faker import Faker, Factory
 from faker.providers import date_time, lorem, person, phone_number
 import random
+from PIL import Image
 
 # -------------------------------------------------------------------------------------------------------------------
 # https://faker.readthedocs.io/en/master/locales/pl_PL.html
@@ -38,19 +44,17 @@ import random
 # )
 
 # --------------------------------FAKER-------------------------------------------
-
 fake = Faker('pl_PL')
-
-email = fake.email()
-first_name = fake.first_name()
-last_name = fake.last_name()
-tel = fake.phone_number()
-username_base = 'user000'
-url = fake.url(schemes=None)
-skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
-instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
-about = fake.text(max_nb_chars=500, ext_word_list=None)
+# email = fake.email()
+# first_name = fake.first_name()
+# last_name = fake.last_name()
+# tel = fake.phone_number()
+# username_base = 'user000'
+# url = fake.url(schemes=None)
+# skype = fake.first_name() + "." + fake.last_name() + "." + str(random.randint(1, 999))
+# instagram = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+# facebook = fake.word(ext_word_list=None) + "." + fake.word(ext_word_list=None)
+# about = fake.text(max_nb_chars=500, ext_word_list=None)
 
 # ----- Create Users-------
 # for x in range(1, 99):
@@ -209,5 +213,88 @@ about = fake.text(max_nb_chars=500, ext_word_list=None)
 #             picture_id_id=pic.id,
 #         )
 
+
+# --------Picture Thumbnails--------
+# ---pattern => fashion_001_thumb.jpg
+
+# all_pictures = Picture.objects.all()
+# for pic in all_pictures:
+#     full_size = pic.picture
+#     filename, extension = path.splitext(str(full_size))
+#     outfile = filename +  "_thumb.jpg"
+#     pic.picture_thumbnail = outfile
+#     pic.save()
+
+# ------Create----Picture----Slugs-------
+# sample title => Wieża słuchać różowy blisko. Piękny dziedzina naprawdę siedemdziesiąt dziewięćdziesiąt umożliwiać wiosna. Powinien fakt maj.
+
+# all_pictures = Picture.objects.all()
+# pic_slug = ""
+# for pic in all_pictures:
+#     title = pic.title
+#     pic_category = pic.picture_category_id.category_slug
+#
+#     # remove polish characters
+#     output = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+#     output = str(output)[2:-1]
+#
+#     # remove special characters, prepare initail slug/
+#     output = re.sub('[^A-Za-z0-9]+', ' ', output)
+#     output = output.replace(' ', '-')
+#     output = output[0:-1].lower()
+#
+#     if len(output) < 5:
+#         pic_slug = pic_category + "-" + str(random.randint(1, 10000))
+#
+#     if len(output) > 100:  # shorten slug to max 100 characters
+#         while len(output) > 100:
+#             k = output.rfind("-")
+#             output = output[:k]
+#             pic_slug = output
+#     else:
+#         pic_slug = output
+#
+#     if PictureCategory.objects.filter(category_slug__exact=pic_slug):
+#         pic_slug = pic_slug+"-"+str(random.randint(1,1000))
+#
+#     pic.pic_slug=pic_slug
+#     pic.save()
+
+
+# -----------Change Category slugs-------------
+# x = PictureCategory.objects.get(id=5)
+# x.category_slug="fotografia-dokumentalna"
+# x.save()
+# print(x.category_slug)
+
+
+# -----------Thumbnails dimansions -------------
+#
+# all_pictures = Picture.objects.all()
+# for thumb in all_pictures:
+#     thumbnail = thumb.picture_thumbnail
+#     full_path_to_file = "../" + settings.MEDIA_ROOT + str(thumbnail)
+#     im = Image.open(full_path_to_file)
+#     picture_width = im.size[0]
+#     picture_height = im.size[1]
+#     thumb.th_width = int(picture_width)
+#     thumb.th_height = int(picture_height)
+#     thumb.save()
+#     im.close()
+
+# -----------ADD AVATAR PICTURES-----------------
+# all_users = ExtendUser.objects.all().order_by('id')
+# x = 10
+# y = 90
+# while (x < 18):
+#     avatar = "avatar_test_0" + str(x) + ".jpg"
+#     # print("=> ", avatar)
+#     usr = all_users[y]
+#     usr.avatar_picture=avatar
+#     usr.save()
+#     y = y + 1
+#     x = x + 1
+
+# -----------------------------------------------------------------------------------------------------------------------
 # odpalamy w konsoli
 # python3 ../manage.py shell < working_scripts.py

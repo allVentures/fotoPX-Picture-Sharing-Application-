@@ -1,0 +1,109 @@
+{% include  "header.html" %}
+
+<h3 class="h3FotoPx">Kategoria: {{ picture.picture_category_id }} </h3>
+
+<div class="pictureView">
+    <div class="sliderRight">&lt</div>
+    <img class="img-fluid" src="{{ picture.picture.url }}" alt="">
+    <div class="sliderLeft">&gt</div>
+</div>
+<div class="row userInfoPictureView">
+    <div class="pictureTitle col-8">
+        <h6>{{ picture.title }}</h6>
+        <p>{{ picture.description }}</p>
+    </div>
+    <div class="userAvatarDiv col-4">
+        <img class="userAvatar" src="{{ owner.avatar_picture.url }}"
+             alt=" {{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}">
+        <div class="userFollow">
+            <p>{{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}</p>
+            <button type="button" class="btn btn-primary">follow</button>
+        </div>
+    </div>
+</div>
+<div class="row pictureComments">
+    <div class="col-6">
+        <ul class="list-unstyled">
+            {% for comment in comments %}
+                {% for commenter in commenters_array %}
+                    {% if commenter.user_id == comment.commenter.id %}
+                        <li class="media comments">
+                            <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}" alt="">
+                            <div>
+                                <a href="#">{{ commenter.name }}</a>
+                                <div class="media-body">
+                                    {{ comment.comment }}
+                                </div>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="pictureExif col-6">
+        <h4 class="pictureViewH4">Oceń zdjęcie</h4>
+        <p>*****</p>
+        <h4 class="pictureViewH4">Statystyka:</h4>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">średnia ocena:</th>
+                <td>???? POILCZYC trzeba</td>
+            </tr>
+            <tr>
+                <th scope="row">liczba odsłon</th>
+                <td>{{ picture.views }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Dodano</th>
+                <td>{{ picture.upload_date }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Kategoria</th>
+                <td>{{ picture.picture_category_id }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <h4 class="pictureViewH4">Dane techniczne zdjecia:</h4>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">Aparat:</th>
+                <td>{{ picture.camera_make }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Obiektyw</th>
+                <td>{{ picture.lens }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Ogniskowa</th>
+                <td>{{ picture.focal_length }} mm</td>
+            </tr>
+            <tr>
+                <th scope="row">Przeslona:</th>
+                <td>f/{{ picture.f_stop }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Czas naświetlania</th>
+                <td>{{ picture.shutter_speed }}</td>
+            </tr>
+            <tr>
+                <th scope="row">ISO</th>
+                <td>{{ picture.ISO }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h4 class="pictureViewH4">Picture Tags:</h4>
+        {% for t in picture.picturetags_set.all %}
+            <button type="button" class="btn btn-outline-secondary">{{ t.picture_tag }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% include "footer.html" %}

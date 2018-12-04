@@ -1,12 +1,12 @@
 {% include  "header.html" %}
+<h3 class="h3FotoPx">kategoria: {{ category }}</h3>
 
-{% if msg %}
-    <h3 class="h3 h3Colors">{{ msg }}</h3>
-
-{% else %}
-
-   ALL PICTURES
-
-{% endif %}
-
+<div class="grid">
+    {% for img in pictures %}
+        <a href="/{{ img.picture_category_id.category_slug }}/{{ img.pic_slug }}/{{ img.id }}">
+            <img class="pictureThumbnail" data-height={{ img.th_height }} data-width={{ img.th_width }}
+                 src="{{ img.picture_thumbnail.url }}">
+        </a>
+    {% endfor %}
+</div>
 {% include "footer.html" %}

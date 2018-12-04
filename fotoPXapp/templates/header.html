@@ -4,15 +4,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     {#link to fonts awesome#}
-{#    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"#}
-{#          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"#}
-{#          crossorigin="anonymous">#}
+    {#    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"#}
+    {#          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"#}
+    {#          crossorigin="anonymous">#}
     {#link to Bootstrap files#}
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-{#    <script src="{% static 'js/bootstrap.js' %}"></script>#}
     <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
     <script src="{% static 'js/popper.js' %}"></script>
-
+    <script src="{% static 'js/bootstrap.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
@@ -22,18 +21,38 @@
 <div class="websiteHeader">
     <nav class="navbar navbar-expand-lg navbar-dark headerRooms">
         <a class="navbar-brand" id="logo">fotoPX</a>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" href="/">Strona Glowna</a>
-                <a class="nav-item nav-link" href="/nowe-zdjecia">Zdjecia</a>
-                <a class="nav-item nav-link" href="#">Użytkownicy</a>
-                <a class="nav-item nav-link" href="#">xxxxxx</a>
-                <a class="nav-item nav-link" href="#">xxxxxx</a>
-                <a class="nav-item nav-link" href="#">xxxxxx</a>
-            </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/kategoria/cat/0">strona główna<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        zdjęcia
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/kategoria/wszystkie-zdjecia/0">Wszystkie zdjecia</a>
+                        <a class="dropdown-item" href="/kategoria/krajobraz/1">krajobraz</a>
+                        <a class="dropdown-item" href="/kategoria/moda-fashion/2">moda (fashion)</a>
+                        <a class="dropdown-item" href="/kategoria/reklama-komercja/3">reklama i komercja</a>
+                        <a class="dropdown-item" href="/kategoria/portret/4">portret</a>
+                        <a class="dropdown-item" href="/kategoria/fotografia-dokumentalna/5">dokument</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">xxxxx</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">xxxx</a>
+                </li>
+            </ul>
         </div>
     </nav>
-
 </div>
 <div class="mainContainer">
     <!-- end of header -->

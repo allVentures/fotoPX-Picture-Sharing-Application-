@@ -47,7 +47,7 @@ body {
     font-size: 50px;
     font-weight: 900;
     color: #cbcb95;
-    margin: 0 10px 0 10px;
+    margin: 0 30px 0 10px;
 }
 
 /*-----Footer-----*/
@@ -75,108 +75,176 @@ body {
     max-width: 1280px;
     margin: 0 auto;
     height: 100%;
-    padding: 15px 15px;
+    /*padding: 15px 15px;*/
     background-color: #f2f2f2;
 }
 
+/*-----Pictures Grid-----*/
 
-/*-------------------CHECK------------------------------------------------*/
-
-table {
-    table-layout: fixed;
-    word-wrap: break-word;
-}
-
-
-.centerTableCol {
-    text-align: center;
-}
-
-.h3Colors {
-    background-color: #aba76c;
-    color: white;
-    padding: 10px 15px;
-}
-
-.h4Colors {
-    background-color: #0063cc;
-    color: white;
-    padding: 10px 15px;
-}
-
-#groupsSelection {
-    width: 400px;
-    min-height: 100px;
-}
-
-.tdAlignRight {
-    text-align: right;
-}
-
-.pGroupsHeader {
-    display: inline;
-    line-height: 40px;
-}
-
-.tdAvatar {
-    width: 400px;
-    max-height: 400px;
-    display: block;
-    overflow: hidden;
-}
-
-.tdAvatar img {
-}
-
-.thAvatar {
-    width: 400px;
-}
-
-.col20 {
-    width: 20%;
-}
-
-.col60 {
-    width: 60%;
-}
-
-.col40 {
-    width: 40%;
-}
-
-.userDetailsDiv {
-    display: inline-block;
-    vertical-align: top;
-    width: 69.5%;
-}
-
-.divAvatar {
-    display: inline-block;
-    height: 400px;
-    width: 30%;
-    overflow: hidden;
+.grid {
+    display: flex;
+    flex-wrap: wrap;
     position: relative;
 }
 
-.divAvatar img {
-    position: absolute;
-    object-fit: cover;
+/*.grid::after {*/
+/*content: '';*/
+/*flex-grow: 999999999;*/
+/*}*/
+
+.grid > figure {
+    margin: 0;
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1);
+    transition: all 0.4s ease-in-out;
+    z-index: 0;
+    border: 1px solid black;
 }
 
-.noPicture {
+.grid > figure.loaded:hover {
+    border-radius: 10px;
+    transform: scale(1.03);
+    z-index: 5;
+}
+
+.grid figure a img {
+    height: 280px;
+}
+
+/*-------------------WEB ELEMENTS----------------------------------*/
+
+.h3FotoPx {
+    background-color: #827e4a;
+    color: white;
+    padding: 10px 15px;
+    margin: 0;
+}
+
+.h5FotoPx {
+    background-color: #aba76c;
+    color: white;
+    padding: 10px 15px;
+    margin: 0;
+}
+
+h6 {
+    font-weight: 700;
+}
+
+.errorMessage {
     width: 100%;
-    height: 100%;
-    border: rgb(222, 226, 230) 1px solid;
+    text-align: center;
+    color: red;
+    margin-top: 150px;
+}
+
+/*-------------------PICTURE VIEW------------------------*/
+.pictureView {
     margin: 0;
     padding: 0;
-    display: table;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    /*overflow: hidden;*/
 }
 
-.noPicture i {
-    color: rgb(222, 226, 230);
-    font-size: 270px;
-    align-content: baseline;
-    display: table-cell;
+.sliderLeft, .sliderRight {
+    font-size: 100px;
+    font-weight: 900;
+    background-color: #4e555b;
+    opacity: 0.5;
+    border-radius: 20px;
+    padding: 0 5px;
+    position: absolute;
+}
+
+.sliderLeft {
+    transform: translateX(580px);
+}
+
+.sliderRight {
+    transform: translateX(-580px);
+}
+
+.userInfoPictureView {
+    margin: 0;
+    padding: 10px;
+    background-color: #dad8be;
+    color: #574357;
+    width: 100%;
+}
+
+.pictureTitle {
     text-align: center;
-    vertical-align: middle;
+}
+
+.userAvatar {
+    height: 100px;
+    width: 100px;
+    float: right;
+    margin-left: 15px;
+}
+
+.userFollow {
+    float: right;
+}
+
+.userFollow p {
+    font-size: 22px;
+    text-align: right;
+    width: 100%;
+}
+
+.userFollow button {
+    float: right;
+}
+
+/*------------Picture comments-----------*/
+.pictureComments {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.commentAvatar {
+    height: 80px;
+    width: 80px;
+    border-radius: 5px;
+}
+
+li.comments {
+    padding: 10px;
+    text-align: left;
+}
+
+li.comments a {
+    font-weight: bold;
+    display: block;
+    width: auto;
+
+}
+
+li.comments div {
+    background-color: #dee2e6;
+    padding: 5px;
+    display: block;
+    border-radius: 5px;
+}
+
+.pictureExif  {
+    border-left: lightgray solid 1px;
+}
+
+.pictureViewH4{
+    width: 100%;
+    /*background-color: #aba76c;*/
+    color: gray;
+    padding: 10px 15px;
+    margin: 0;
+    text-align: left;
 }

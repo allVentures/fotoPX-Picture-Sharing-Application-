@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, HttpRequest, Http404
@@ -39,12 +40,41 @@ class user_registration(View):
 
 
 # -----------------------------PICTURES-----------------------------
-class AllPictures(View):
-    def get(self, request):
-        all_pictures = Picture.objects.all()
+# ----------All pictures & all pictures in categories--------
 
-        ctx = {"pictures": all_pictures}
+class AllPictures(View):
+    def get(self, request, category_slug, id):
+        categ_id = int(id)
+        if categ_id == 0:
+            all_pictures = Picture.objects.all()
+            category = "wszystkie zdjecia"
+        else:
+            try:
+                all_pictures = Picture.objects.filter(picture_category_id=categ_id)
+                category = PictureCategory.objects.get(id=categ_id)
+            except ObjectDoesNotExist:
+                ctx = {"msg": "Nie ma takiej kategorii"}
+                return render(request, "standard_error_page.html", ctx)
+        ctx = {"pictures": all_pictures, "category": category}
         return render(request, "all_pictures.html", ctx)
+
+
+class PictureView(View):
+    def get(self, request, category_slug, picture_slug, id):
+        picture_to_display = Picture.objects.get(id=id)
+        picture_owner_id = picture_to_display.picture_user_id_id
+        picture_owner_info = ExtendUser.objects.get(user_id=picture_owner_id)
+        picture_comments = PictureComment.objects.filter(picture_id_id=id)
+        all_commenters = []
+        for usr in picture_comments:
+            commenter = ExtendUser.objects.get(user_id=usr.commenter)
+            all_commenters.append(commenter)
+        print(all_commenters)
+
+
+        ctx = {"picture": picture_to_display, "owner": picture_owner_info, "comments": picture_comments,
+               "commenters_array": all_commenters}
+        return render(request, "picture_view.html", ctx)
 
 # -----------------------COMMENTS / RATINGS-----------------------------
 
