@@ -1,6 +1,8 @@
 {% include  "header.html" %}
 
-<h3 class="h3FotoPx">Kategoria: {{ picture.picture_category_id }} </h3>
+<h3 class="h3FotoPx">Kategoria: <a
+        href="/kategoria/{{ picture.picture_category_id.category_slug }}/{{ picture.picture_category_id_id }}">{{ picture.picture_category_id }}</a>
+</h3>
 
 <div class="pictureView">
     <div class="sliderRight">&lt</div>
@@ -47,13 +49,13 @@
     </div>
     <div class="pictureExif col-6">
         <h4 class="pictureViewH4">Oceń zdjęcie</h4>
-        <p>*****</p>
+        <h1>*****</h1>
         <h4 class="pictureViewH4">Statystyka:</h4>
         <table class="table">
             <tbody>
             <tr>
                 <th scope="row">średnia ocena:</th>
-                <td>???? POILCZYC trzeba</td>
+                <td>{{ picture_rating }}</td>
             </tr>
             <tr>
                 <th scope="row">liczba odsłon</th>
@@ -61,11 +63,13 @@
             </tr>
             <tr>
                 <th scope="row">Dodano</th>
-                <td>{{ picture.upload_date }}</td>
+                <td>{{ picture.upload_date |date:"Y-m-d" }}</td>
             </tr>
             <tr>
                 <th scope="row">Kategoria</th>
-                <td>{{ picture.picture_category_id }}</td>
+                <td>
+                    <a href="/kategoria/{{ picture.picture_category_id.category_slug }}/{{ picture.picture_category_id_id }}">{{ picture.picture_category_id }}</a>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -103,7 +107,9 @@
 
         <h4 class="pictureViewH4">Picture Tags:</h4>
         {% for t in picture.picturetags_set.all %}
-            <button type="button" class="btn btn-outline-secondary">{{ t.picture_tag }}</button>
+            <a href="/zdjecia/tag/{{ t.picture_tag.slug }}/{{ t.picture_tag.id }}">
+                <button type="button" class="btn btn-outline-secondary tagButton">{{ t.picture_tag }}</button>
+            </a>
         {% endfor %}
     </div>
 </div>

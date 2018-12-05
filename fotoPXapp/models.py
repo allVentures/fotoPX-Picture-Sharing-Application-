@@ -35,7 +35,7 @@ class ExtendUser(models.Model):
     instagram_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
     facebook_id = models.CharField(max_length=64, null=True)
     facebook_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    website = models.URLField(null=True)
+    website = models.URLField(null=True, max_length=128)
     website_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
     about_me = models.TextField()
     user = models.OneToOneField(User, on_delete=models.CASCADE)

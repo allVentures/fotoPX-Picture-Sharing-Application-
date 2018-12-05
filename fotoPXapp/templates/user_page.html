@@ -1,8 +1,96 @@
 {% include  "header.html" %}
 
-<h3 class="h3FotoPx"> Użytkownik: </h3>
+<h3 class="h3FotoPx">{{ user.first_name }} {{ user.last_name }}</h3>
+<div class="row userInfoUserPage">
+    <div class="col-3">
+        <img class="img-fluid userPageAvatar" src="{{ user.extenduser.avatar_picture.url }}"
+             alt="{{ user.first_name }} {{ user.last_name }}">
+    </div>
+    <div class="col-2 userInfoPageSubDiv">
+        <h6>statystka</h6>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">ilosc zdjec:</th>
+                <td>{{ user.picture_set.count }}</td>
+            </tr>
+            <tr>
+                <th scope="row">odslony:</th>
+                <td>{{ user_stat.views }}</td>
+            </tr>
+            <tr>
+                <th scope="row">srednia ocen:</th>
+                <td>{{ user_stat.av_rating }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
+    <div class="col-3 userInfoPageSubDiv">
+        <h6>lokalizacja</h6>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">województwo:</th>
+                <td>{{ user_stat.user_voivodeship }}</td>
+            </tr>
+            <tr>
+                <th scope="row">powiat:</th>
+                <td>{{ user_stat.user_county }}</td>
+            </tr>
+            <tr>
+                <th scope="row">gmina:</th>
+                <td>{{ user_stat.user_city }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
+    <div class="col-4 userInfoPageSubDiv">
+        <h6>dane kontaktowe</h6>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">website:</th>
+                <td>{{ user.extenduser.website }}</td>
+            </tr>
+            <tr>
+                <th scope="row">email:</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th scope="row">facebook id:</th>
+                <td>{{ user.extenduser.facebook_id }}</td>
+            </tr>
+                        <tr>
+                <th scope="row">instagram id:</th>
+                <td>{{ user.extenduser.instagram_id }}</td>
+            </tr>
+                        <tr>
+                <th scope="row">facebook id:</th>
+                <td>{{ user.extenduser.phone_number }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
+<div class="row aboutMeDiv">
+    <div class="col-12">
+        <h6> o mnie</h6>
+        <p>{{ user.extenduser.about_me }}</p>
+    </div>
+</div>
+
+<h3 class="h3FotoPx"><div>zdjęcia użytkownika</div><button type="button" class="btn btn-primary">follow</button>
+</h3>
+<div class="grid">
+    {% for img in pictures %}
+        <a href="/{{ img.picture_category_id.category_slug }}/{{ img.pic_slug }}/{{ img.id }}">
+            <img class="pictureThumbnail" data-height={{ img.th_height }} data-width={{ img.th_width }}
+                 src="{{ img.picture_thumbnail.url }}">
+        </a>
+    {% endfor %}
+</div>
 
 {% include "footer.html" %}

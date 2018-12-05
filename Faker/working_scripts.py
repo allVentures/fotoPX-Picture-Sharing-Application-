@@ -7,6 +7,7 @@ from unicodedata import normalize
 from idna import unicode
 
 from fotoPX import settings
+from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
     PictureRating, PictureTags, Regions, Followers, Tags
 from faker import Faker, Factory
@@ -237,10 +238,6 @@ fake = Faker('pl_PL')
 #     title = pic.title
 #     pic_category = pic.picture_category_id.category_slug
 #
-#     # remove polish characters
-#     output = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
-#     output = str(output)[2:-1]
-#
 #     # remove special characters, prepare initail slug/
 #     output = re.sub('[^A-Za-z0-9]+', ' ', output)
 #     output = output.replace(' ', '-')
@@ -309,7 +306,7 @@ fake = Faker('pl_PL')
 #     woj = Regions.objects.get(voivodeship_id=wojewodztwo_id, county_id=None)
 #     woj_lower = woj.city.lower()
 #     stri = woj_lower
-#     slug = "fotograf/" + stri + "/" + us.user.first_name + "-" + us.user.last_name + "/" + str(us.id)
+#     slug = "fotograf/" + stri + "/" + us.user.first_name + "-" + us.user.last_name + "/" + str(us.user.id)
 #     # remove polish characters:
 #     polishChars = ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź']
 #     replaceChar = ['a', 'c', 'e', 'l', 'n', 'o', 's', 'z', 'z']
@@ -322,6 +319,27 @@ fake = Faker('pl_PL')
 #     # print(slug)
 #     us.slug = slug
 #     us.save()
+
+# print(ReplacePolishCharacters("dolnośląskie"))
+
+# ------Generate random picture Views------
+# pictures = Picture.objects.all()
+# for el in pictures:
+#     views = random.randint(1,155)
+#     el.views=views
+#     el.save()
+
+# ----------Generate slugs for Picture tags--------------
+# tags = Tags.objects.all()
+# for el in tags:
+#     tag = el.tag
+#     tag = ReplacePolishCharacters(tag)
+#     tag = RemoveSpecialCharacters (tag).lower()
+#     slug = tag
+#     el.slug=slug
+#     el.save()
+
+
 
 # -----------------------------------------------------------------------------------------------------------------------
 # odpalamy w konsoli

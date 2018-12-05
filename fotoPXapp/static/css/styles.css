@@ -127,6 +127,10 @@ body {
     margin: 0;
 }
 
+.h3FotoPx a {
+    color: white;
+}
+
 .h5FotoPx {
     background-color: #aba76c;
     color: white;
@@ -253,8 +257,100 @@ li.comments div {
     text-align: left;
 }
 
-h4.pictureViewH4 ~ button {
+.tagButton {
     margin: 5px;
 }
 
 /*-----------------USER PAGE----------------------------*/
+.userInfoUserPage {
+    width: 100%;
+}
+
+.userInfoPageSubDiv {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.userPageAvatar {
+    /*max-width: 250px;*/
+    /*max-height: 250px;*/
+}
+
+.h3FotoPx div {
+    display: inline-block;
+}
+
+.h3FotoPx div + button {
+    display: inline-block;
+    float: right;
+}
+
+.aboutMeDiv {
+    margin: 0 10px;
+    border-top: 1px solid lightgray;
+}
+
+/*----------------USER REGISTRATION--------------------*/
+.registerMainDiv {
+    padding: 0 10px;
+}
+
+.registerLeftDiv, .registerRightDiv {
+    padding: 10px 30px;
+}
+
+.registerLeftDiv {
+    border-right: 1px solid lightgray;
+}
+
+.formGroupFotoPX {
+    color: #28283e;
+    margin-bottom: 5px;
+}
+
+.privacyDiv {
+    display: inline-block;
+}
+
+.privacyDivLeft {
+    width: 66%;
+    margin-right: 10px;
+}
+
+.privacyDivRight {
+    width: 30%;
+}
+
+.noPicture {
+    width: 200px;
+    height: 200px;
+    border: rgb(222, 226, 230) 1px solid;
+    margin: 0;
+    padding: 0;
+    display: table;
+    float: right;
+}
+
+.noPicture i {
+    color: rgb(222, 226, 230);
+    font-size: 170px;
+    align-content: baseline;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.avatarUpload {
+    float: right;
+    width: 50%;
+    margin-top: 60px;
+}
+
+.aboutMeLabel {
+    width: 100%;
+}
+
+.registerButton {
+    margin-top: 10px;
+    margin-left: 25px;
+}

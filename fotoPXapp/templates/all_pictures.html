@@ -1,5 +1,7 @@
 {% include  "header.html" %}
-<h3 class="h3FotoPx">kategoria: {{ category }}</h3>
+<h3 class="h3FotoPx">kategoria: <a
+        href="/kategoria/{{ category.category_slug }}/{{ category.id }}">{{ category }}</a>
+</h3>
 
 <div class="grid">
     {% for img in pictures %}

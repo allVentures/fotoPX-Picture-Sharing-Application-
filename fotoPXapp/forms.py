@@ -1,0 +1,47 @@
+from django import forms
+from django.core.validators import EmailValidator
+
+from fotoPXapp.models import User, ExtendUser, Picture, PictureTags, PictureCategory, PictureRating, PictureComment, \
+    PRIVACY, PICTURE_RATING, Tags
+
+
+class RegisterForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=32, widget=forms.TextInput(attrs={"class": "form-control"}))
+    password = forms.CharField(label="Password", max_length=32,
+                               widget=forms.PasswordInput(attrs={"class": "form-control"}))
+    password_check = forms.CharField(label="Password Check", max_length=32,
+                                     widget=forms.PasswordInput(attrs={"class": "form-control"}))
+    first_name = forms.CharField(label="First Name", max_length=32,
+                                 widget=forms.TextInput(attrs={"class": "form-control"}))
+    last_name = forms.CharField(label="Last Name", max_length=32,
+                                widget=forms.TextInput(attrs={"class": "form-control"}))
+    email = forms.EmailField(label="email", validators=[EmailValidator()],
+                             widget=forms.EmailInput(attrs={"class": "form-control privacyInput"}), max_length=64)
+    email_privacy = forms.CharField(label="Email Privacy",
+                                    widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    website = forms.URLField(label="website", max_length=128, required=False,
+                             widget=forms.URLInput(attrs={"class": "form-control privacyInput"}))
+    website_privacy = forms.CharField(label="Website Privacy", required=False,
+                                      widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    phone = forms.CharField(label="Phone", required=False,
+                            widget=forms.TextInput(attrs={"class": "form-control privacyInput"}), max_length=20)
+    phone_privacy = forms.CharField(label="Phone Privacy", required=False,
+                                    widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    skype = forms.CharField(label="skype", required=False,
+                            widget=forms.TextInput(attrs={"class": "form-control privacyInput"}), max_length=64)
+    skype_privacy = forms.CharField(label="skype Privacy", required=False,
+                                    widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    instagram = forms.CharField(label="instagram", required=False,
+                                widget=forms.TextInput(attrs={"class": "form-control privacyInput"}), max_length=64)
+    instagram_privacy = forms.CharField(label="Instagram Privacy", required=False,
+                                        widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    facebook = forms.CharField(label="facebook", required=False,
+                               widget=forms.TextInput(attrs={"class": "form-control privacyInput"}), max_length=64)
+    facebook_privacy = forms.CharField(label="Facebook Privacy", required=False,
+                                       widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
+    about_me = forms.CharField(label="about me", required=False, max_length=512, widget=forms.Textarea(
+                               attrs={"class": "form-control privacy"}))
+    avatar_picture = forms.ImageField(label="avatar picture", required=False)
+
+    # region = models.ForeignKey('Regions', on_delete=models.SET_NULL, null=True)
+
