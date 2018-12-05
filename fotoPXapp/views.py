@@ -39,7 +39,7 @@ class user_registration(View):
         return None
 
 class user_page(View):
-    def get(self, request):
+    def get(self, request, voivodeship, name, id):
         ctx = {}
         return render(request, "user_page.html", ctx)
 

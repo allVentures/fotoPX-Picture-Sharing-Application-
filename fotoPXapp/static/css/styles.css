@@ -50,6 +50,10 @@ body {
     margin: 0 30px 0 10px;
 }
 
+.mainNavBar {
+    margin-right: auto;
+}
+
 /*-----Footer-----*/
 
 .websiteFooter {
@@ -247,6 +251,10 @@ li.comments div {
     padding: 10px 15px;
     margin: 0;
     text-align: left;
+}
+
+h4.pictureViewH4 ~ button {
+    margin: 5px;
 }
 
 /*-----------------USER PAGE----------------------------*/

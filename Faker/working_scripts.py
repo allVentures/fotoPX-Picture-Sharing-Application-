@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from os import path, rename, remove
 import re
-import unicodedata
+# import unicodedata
+from unicodedata import normalize
+
+from idna import unicode
 
 from fotoPX import settings
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
@@ -294,6 +297,31 @@ fake = Faker('pl_PL')
 #     usr.save()
 #     y = y + 1
 #     x = x + 1
+
+# ---------------CHANGE USER SLUGS ------------------------------
+# -----------Change Category slugs-------------
+
+
+# users = ExtendUser.objects.all()
+# for us in users:
+#     region = Regions.objects.get(id=us.region_id)
+#     wojewodztwo_id = region.voivodeship_id
+#     woj = Regions.objects.get(voivodeship_id=wojewodztwo_id, county_id=None)
+#     woj_lower = woj.city.lower()
+#     stri = woj_lower
+#     slug = "fotograf/" + stri + "/" + us.user.first_name + "-" + us.user.last_name + "/" + str(us.id)
+#     # remove polish characters:
+#     polishChars = ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź']
+#     replaceChar = ['a', 'c', 'e', 'l', 'n', 'o', 's', 'z', 'z']
+#     arr_len = 9
+#     i = 0
+#     while i < 9:
+#         slug = slug.replace(polishChars[i], replaceChar[i])
+#         i = i + 1
+#     # slug = "fotograf/" + stri + "/" + us.user.first_name + "-"+us.user.last_name + "/" + str(us.id)
+#     # print(slug)
+#     us.slug = slug
+#     us.save()
 
 # -----------------------------------------------------------------------------------------------------------------------
 # odpalamy w konsoli

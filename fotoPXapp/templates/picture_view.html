@@ -13,10 +13,12 @@
         <p>{{ picture.description }}</p>
     </div>
     <div class="userAvatarDiv col-4">
-        <img class="userAvatar" src="{{ owner.avatar_picture.url }}"
-             alt=" {{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}">
+        <a href="/{{ owner.slug }}">
+            <img class="userAvatar" src="{{ owner.avatar_picture.url }}"
+                 alt=" {{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}"></a>
         <div class="userFollow">
-            <p>{{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}</p>
+            <a href="/{{ owner.slug }}">
+                <p>{{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}</p></a>
             <button type="button" class="btn btn-primary">follow</button>
         </div>
     </div>
@@ -28,9 +30,11 @@
                 {% for commenter in commenters_array %}
                     {% if commenter.user_id == comment.commenter.id %}
                         <li class="media comments">
-                            <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}" alt="">
+                            <a href="/{{ commenter.slug }}">
+                                <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}" alt="">
+                            </a>
                             <div>
-                                <a href="#">{{ commenter.name }}</a>
+                                <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
                                 <div class="media-body">
                                     {{ comment.comment }}
                                 </div>
@@ -103,7 +107,6 @@
         {% endfor %}
     </div>
 </div>
-
 
 
 {% include "footer.html" %}
