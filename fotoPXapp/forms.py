@@ -48,4 +48,14 @@ class RegisterForm(forms.Form):
                                        widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
     about_me = forms.CharField(label="about me", required=False, max_length=512, widget=forms.Textarea(
         attrs={"class": "form-control privacy"}))
-    avatar_picture = forms.ImageField(label="avatar picture", required=False)
+    avatar_picture = forms.ImageField(label="avatar picture", required=False, error_messages={
+        'invalid_image': 'zaladuj poprawny plik ze zdjeciem. dozwolone formaty: .jpg, .tif, .bmp'})
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label="Username", max_length=32,
+                               widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "username"}),
+                               error_messages={'required': 'to pole jest wymagane'})
+    password = forms.CharField(label="Password", max_length=32,
+                               widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "hasło"}),
+                               error_messages={'required': 'to pole jest wymagane'})

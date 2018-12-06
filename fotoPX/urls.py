@@ -18,13 +18,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.conf.urls import url
-from fotoPXapp.views import user_registration, MainPage, AllPictures, PictureView, user_page,TagView
+from fotoPXapp.views import user_registration, MainPage, AllPictures, PictureView, user_page, TagView, LoginPage, Logout
 
 urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     url(r'^admin/', admin.site.urls),
     url(r'^rejestracja', user_registration.as_view(), name="user_registration"),
+    url(r'^logout', Logout.as_view(), name="logout"),
+    url(r'^login', LoginPage.as_view(), name="login"),
     url(r'^$', MainPage.as_view(), name="main_page"),
     re_path(r'^kategoria/(?P<category_slug>[A-Za-z-]+)/(?P<id>[0-9]+)$', AllPictures.as_view(), name="all_pictures"),
     re_path(r'^(?P<category_slug>[A-Za-z-]+)/(?P<picture_slug>[A-Za-z0-9-]+)/(?P<id>[0-9]+)$', PictureView.as_view(),

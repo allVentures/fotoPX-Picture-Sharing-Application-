@@ -1,21 +1,21 @@
+import random
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User, Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db.models.aggregates import Avg, Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse, HttpRequest, Http404
 from django.views import View
 from django.conf import settings
 from os import path, rename, remove
 from json import dumps
-
-# from psycopg2._psycopg import IntegrityError
-
 from fotoPXapp.models import User, ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters
 from PIL import Image
-from fotoPXapp.forms import RegisterForm
+from fotoPXapp.forms import RegisterForm, LoginForm
 
 
 # ------------MAIN PAGE, HEADER , FOOTER-----------------------
@@ -31,7 +31,6 @@ class user_registration(View):
         form = RegisterForm()
         voId = request.GET.get('voivodeship_id')
         countyId = request.GET.get('county_id')
-        print(voId)
 
         if voId == None:
             regions = Regions.objects.filter(county_id=None)
@@ -75,6 +74,27 @@ class user_registration(View):
             county_id = request.POST.get("county_id")
             municipality_id = request.POST.get("municipality_id")
 
+            if int(voivodeship_id) == 0:
+                user_region_id = 3000
+                print("1szy ", user_region_id)
+            else:
+                if int(county_id) == 0:
+                    user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id__isnull=True).id
+                    print("2ci ", user_region_id)
+                else:
+                    if int(municipality_id) == 0:
+                        user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id=county_id,
+                                                             municipality_id__isnull=True).id
+                        print("3ci ", user_region_id)
+                    else:
+                        user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id=county_id,
+                                                             municipality_id=municipality_id).id
+                        print("4ty ", user_region_id)
+
+            errors = {}
+            if password != password_check:
+                errors["password"] = "wprowadzone hasła nie są jednakowe, wprowadź ponownie"
+
             try:
                 new_user = User.objects.create_user(
                     username=username,
@@ -84,24 +104,143 @@ class user_registration(View):
                     password=password
                 )
                 new_user.save()
+                new_user_id = new_user.id
             except IntegrityError:
+                errors["username"] = "wprowadzona nazwa użytkownika jest już zajęta, wybierz inną"
+            if errors:
+                new_user
                 regions = Regions.objects.filter(county_id=None)
-                error = "wprowadzona nazwa użytkownika jest już zajęta, wybierz inną"
-                ctx = {"regions": regions, "form": form, "error": error}
+                ctx = {"regions": regions, "form": form, "errors": errors}
                 return render(request, "user_registration.html", ctx)
 
+            region = Regions.objects.get(id=user_region_id)
+            wojewodztwo_id = region.voivodeship_id
+            woj = Regions.objects.get(voivodeship_id=wojewodztwo_id, county_id=None)
+            woj_lower = woj.city.lower()
+            stri = woj_lower
+            if stri == "nie podano":
+                stri = "polska"
+            slug = "fotograf/" + stri + "/" + new_user.first_name + "-" + new_user.last_name + "/" + str(
+                new_user.id)
+            cleaned_slug = ReplacePolishCharacters(slug)
+            # --- start of avatar processing----
             if 'avatar_picture' in request.FILES:
                 avatar_picture = request.FILES["avatar_picture"]
-                im = Image.open(avatar_picture)
-                im.save(settings.MEDIA_ROOT + "xxxxxxxxx.jpg", "JPEG")
-                return  HttpResponse("SAVED")
+
+                # image format validation and dimesions check
+                max_picture_width = 600
+                min_picture_width = 400
+                min_picture_height = 400
+                max_picture_height = 600
+
+                try:
+                    im = Image.open(avatar_picture)
+                    picture_width = im.size[0]
+                    picture_height = im.size[1]
+                    print(picture_height)
+                    if picture_width < min_picture_width or picture_height < min_picture_height:
+                        avatar_error = "Avatar musi miec min 400px x 400px!"
+                        im.close()
+                        regions = Regions.objects.filter(county_id=None)
+                        ctx = {"regions": regions, "form": form, "avatar_error": avatar_error}
+                        return render(request, "user_registration.html", ctx)
+                except Exception as avatar_error:  # this is gonna be validated by ImageField in Django anyway
+                    avatar_error = "ten format nie jest dozwolony, dozwolone formaty: jpg, tif, bmp."
+                    regions = Regions.objects.filter(county_id=None)
+                    ctx = {"regions": regions, "form": form, "avatar_error": avatar_error}
+                    return render(request, "user_registration.html", ctx)
+
+                new_extended_user = ExtendUser.objects.create(
+                    avatar_picture=avatar_picture,
+                    email_privacy=email_privacy,
+                    phone_number=phone,
+                    phone_privacy=phone_privacy,
+                    skype=skype,
+                    skype_privacy=skype_privacy,
+                    instagram_id=instagram,
+                    instagram_privacy=instagram_privacy,
+                    facebook_id=facebook,
+                    facebook_privacy=facebook_privacy,
+                    website=website,
+                    website_privacy=website_privacy,
+                    about_me=about_me,
+                    region_id=user_region_id,
+                    user_id=new_user_id,
+                    slug=cleaned_slug,
+                )
+
+                full_path_to_file = settings.MEDIA_ROOT + str(new_extended_user.avatar_picture)
+
+                # resize image, convert file to jpg
+                ratio = picture_width / picture_height
+
+                if picture_width > max_picture_width or picture_height > max_picture_height:
+                    if ratio > 1:
+                        picture_height = min_picture_height
+                        picture_width = picture_height * ratio
+                    else:
+                        picture_width = min_picture_width
+                        picture_height = picture_width / ratio
+
+                picture_height = int(round(picture_height, 0))
+                picture_width = int(round(picture_width, 0))
+
+                filename, extension = path.splitext((str(new_extended_user.avatar_picture).lower()))
+                im = im.resize((picture_width, picture_height))
+                outfile = filename + ".jpg"
+
+                if new_extended_user.avatar_picture != outfile:
+                    try:
+                        im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                        new_extended_user.avatar_picture = outfile
+                    except IOError as e:
+                        e = "Ten format pliku nie moze byc skonwertowany do jpg."
+                        return render(request, "standard_error_page.html", {"msg": e})
+
+                    except Exception as e:
+                        im.close()
+                        return render(request, "standard_error_page.html", {"msg": e})
+                else:
+                    im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                    new_extended_user.picture = outfile
+                    new_extended_user.save()
+
+                im.close()
+                # -------avatar picture rename-------
+
+                filename, extension = path.splitext(str(new_extended_user.avatar_picture))
+                new_picture_name = "zdjecie-profilowe-" + new_user.first_name + "-" + new_user.last_name + extension
+
+                if ExtendUser.objects.filter(avatar_picture=new_picture_name):
+                    new_picture_name = "zdjecie-profilowe-" + new_user.first_name + "-" + new_user.last_name + str(
+                        random.randint(1, 1000)) + extension
+                else:
+                    rename(settings.MEDIA_ROOT + str(new_extended_user.avatar_picture), settings.MEDIA_ROOT + new_picture_name)
+                new_extended_user.avatar_picture = new_picture_name
+                new_extended_user.save()
+
             else:
-                return HttpResponse("No Picture")
-                pass
+                new_extended_user = ExtendUser.objects.create(
+                    email_privacy=email_privacy,
+                    phone_number=phone,
+                    phone_privacy=phone_privacy,
+                    skype=skype,
+                    skype_privacy=skype_privacy,
+                    instagram_id=instagram,
+                    instagram_privacy=instagram_privacy,
+                    facebook_id=facebook,
+                    facebook_privacy=facebook_privacy,
+                    website=website,
+                    website_privacy=website_privacy,
+                    about_me=about_me,
+                    region_id=user_region_id,
+                    user_id=new_user_id,
+                    slug=cleaned_slug,
+                )
+                return HttpResponse("User Created, NO AVATAR")
 
-
-
-            return HttpResponse("KONIEC FUNKCJI POST" + first_name + str(voivodeship_id))
+            ctx = {"new_user":new_user, "new_extended_user":new_extended_user}
+            return render(request, "user_registration_response.html", ctx)
         else:
             regions = Regions.objects.filter(county_id=None)
             ctx = {"regions": regions, "form": form}
@@ -138,18 +277,28 @@ class user_page(View):
         user_voivodeship_id = Regions.objects.get(id=user_region_id).voivodeship_id
         user_county_id = Regions.objects.get(id=user_region_id).county_id
         user_municipality_id = Regions.objects.get(id=user_region_id).municipality_id
+
         user_voivodeship = Regions.objects.get(voivodeship_id=user_voivodeship_id, county_id__isnull=True,
                                                municipality_id__isnull=True).city
         user_voivodeship = user_voivodeship.lower()
         user_stat["user_voivodeship"] = user_voivodeship
-        user_county = Regions.objects.get(voivodeship_id=user_voivodeship_id, county_id=user_county_id,
-                                          municipality_id__isnull=True).city
-        user_county = user_county.lower()
-        user_stat["user_county"] = user_county
-        user_city = Regions.objects.get(voivodeship_id=user_voivodeship_id, county_id=user_county_id,
-                                        municipality_id=user_municipality_id).city
+
+        if user_county_id == None and user_municipality_id == None:
+            user_county = "nie podano"
+            user_city = "nie podano"
+        elif user_county_id == None:
+            user_city = "nie podano"
+        else:
+            user_county = Regions.objects.get(voivodeship_id=user_voivodeship_id, county_id=user_county_id,
+                                              municipality_id__isnull=True).city
+
+            user_city = Regions.objects.get(voivodeship_id=user_voivodeship_id, county_id=user_county_id,
+                                            municipality_id=user_municipality_id).city
+
         user_city = user_city.lower()
         user_stat["user_city"] = user_city
+        user_county = user_county.lower()
+        user_stat["user_county"] = user_county
 
         ctx = {"user": user_data, "pictures": user_pictures, "user_stat": user_stat}
         return render(request, "user_page.html", ctx)
@@ -210,3 +359,34 @@ class TagView(View):
         ctx = {"pictures": all_tagged_pictures, "tag": tag}
 
         return render(request, "tag_pictures.html", ctx)
+
+# -------------------------SYSTEM----------------------------------
+class LoginPage(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            msg = "jesteś już zalogowany!"
+            return render(request, "standard_error_page.html", {"msg": msg})
+        else:
+            form = LoginForm()
+            ctx = {"form": form}
+            return render(request, "login_page.html", ctx)
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            User = authenticate(username=username, password=password)
+            if User is not None:
+                login(request, User)
+                msg = 'zalogowano!'
+            else:
+                msg = 'niepoprawny login, spróbuj ponownie!'
+        else:
+            return redirect('login')
+        return render(request, "login_page.html", {'form': form, 'msg': msg, "user":User})
+
+class Logout(View):
+    def get(self, request):
+        logout(request);
+        return redirect('main_page')

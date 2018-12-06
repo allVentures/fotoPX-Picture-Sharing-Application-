@@ -371,3 +371,36 @@ ul.errorlist {
     font-size: 14px;
     font-style: italic;
 }
+
+/*----------------LOGIN PAGE--------------------*/
+
+.LoginPage {
+    display: flex;
+    justify-content: center;
+}
+
+.loginForm {
+    width: 30%;
+    margin-top: 10%;
+}
+
+.msgLogin {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.navBarAvatar {
+    height: 60px;
+    width: 60px;
+    border-radius: 20px;
+}
+
+.loginNavBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center
+}

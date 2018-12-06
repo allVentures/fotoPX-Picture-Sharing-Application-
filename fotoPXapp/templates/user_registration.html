@@ -7,8 +7,10 @@
         <div class="col-6 registerLeftDiv">
             <div class="form-group formGroupFotoPX">
                 {{ form.username.errors }}
-                {% if error %}
-                    <p class="errorMessageUserRegist">{{ error }}</p>
+                {% if errors %}
+                    {% for key, val in errors.items %}
+                        <p class="errorMessageUserRegist">{{ val }}</p>
+                    {% endfor %}
                 {% endif %}
                 <label for="{{ form.username.id_for_label }}">nazwa użytkownika</label>
                 {{ form.username }}
@@ -116,6 +118,9 @@
                 <label for="{{ form.avatar_picture.id_for_label }}">zdjęcie profilowe</label>
                 {{ form.avatar_picture }}
             </div>
+            {% if avatar_error %}
+                <p class="errorMessageUserRegist">{{ avatar_error }}</p>
+            {% endif %}
             <div class="form-group formGroupFotoPX">
                 {{ form.about_me.errors }}
                 <label class="aboutMeLabel" for="{{ form.about_me.id_for_label }}">O mnie</label>
