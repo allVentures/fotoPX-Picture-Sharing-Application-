@@ -354,3 +354,20 @@ li.comments div {
     margin-top: 10px;
     margin-left: 25px;
 }
+
+ul.errorlist {
+    margin: 0;
+    list-style: none;
+    color: red;
+    padding: 0;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.errorMessageUserRegist {
+    margin: 0;
+    color: red;
+    padding: 0;
+    font-size: 14px;
+    font-style: italic;
+}

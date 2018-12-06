@@ -6,21 +6,28 @@ from fotoPXapp.models import User, ExtendUser, Picture, PictureTags, PictureCate
 
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(label="Username", max_length=32, widget=forms.TextInput(attrs={"class": "form-control"}))
+    username = forms.CharField(label="Username", max_length=32, widget=forms.TextInput(attrs={"class": "form-control"}),
+                               error_messages={'required': 'to pole jest wymagane'})
     password = forms.CharField(label="Password", max_length=32,
-                               widget=forms.PasswordInput(attrs={"class": "form-control"}))
+                               widget=forms.PasswordInput(attrs={"class": "form-control"}),
+                               error_messages={'required': 'to pole jest wymagane'})
     password_check = forms.CharField(label="Password Check", max_length=32,
-                                     widget=forms.PasswordInput(attrs={"class": "form-control"}))
+                                     widget=forms.PasswordInput(attrs={"class": "form-control"}),
+                                     error_messages={'required': 'to pole jest wymagane'})
     first_name = forms.CharField(label="First Name", max_length=32,
-                                 widget=forms.TextInput(attrs={"class": "form-control"}))
+                                 widget=forms.TextInput(attrs={"class": "form-control"}),
+                                 error_messages={'required': 'to pole jest wymagane'})
     last_name = forms.CharField(label="Last Name", max_length=32,
-                                widget=forms.TextInput(attrs={"class": "form-control"}))
-    email = forms.EmailField(label="email", validators=[EmailValidator()],
-                             widget=forms.EmailInput(attrs={"class": "form-control privacyInput"}), max_length=64)
+                                widget=forms.TextInput(attrs={"class": "form-control"}),
+                                error_messages={'required': 'to pole jest wymagane'})
+    email = forms.EmailField(label="email", widget=forms.EmailInput(attrs={"class": "form-control privacyInput"}),
+                             max_length=64, error_messages={'invalid': 'wprowadź poprawny email adres',
+                                                            'required': 'to pole jest wymagane'})
     email_privacy = forms.CharField(label="Email Privacy",
                                     widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
     website = forms.URLField(label="website", max_length=128, required=False,
-                             widget=forms.URLInput(attrs={"class": "form-control privacyInput"}))
+                             widget=forms.URLInput(attrs={"class": "form-control privacyInput"}),
+                             error_messages={'invalid': 'wprowadz poprawny adres URL zaczynający sie od http://www '})
     website_privacy = forms.CharField(label="Website Privacy", required=False,
                                       widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
     phone = forms.CharField(label="Phone", required=False,
@@ -40,8 +47,5 @@ class RegisterForm(forms.Form):
     facebook_privacy = forms.CharField(label="Facebook Privacy", required=False,
                                        widget=forms.Select(choices=PRIVACY, attrs={"class": "form-control privacy"}))
     about_me = forms.CharField(label="about me", required=False, max_length=512, widget=forms.Textarea(
-                               attrs={"class": "form-control privacy"}))
+        attrs={"class": "form-control privacy"}))
     avatar_picture = forms.ImageField(label="avatar picture", required=False)
-
-    # region = models.ForeignKey('Regions', on_delete=models.SET_NULL, null=True)
-

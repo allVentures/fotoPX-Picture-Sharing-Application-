@@ -17,7 +17,6 @@ $(function () {
     });
 
     function getCounties(id) {
-        console.log(id);
         $.ajax({
             url: "/rejestracja",
             data: {"voivodeship_id": id},
@@ -34,7 +33,7 @@ $(function () {
         var $newEl = `
             <div class="form-group" id="regions">
             <label>Powiat:</label>
-            <select name="regions" class="form-control">
+            <select name="county_id" class="form-control">
             <option value="0">... wybierz Powiat! ...</option>`;
 
         for (const el in countiesList) {
@@ -46,12 +45,13 @@ $(function () {
         var $regionsSelect = $('#regions').find('select');
         $regionsSelect.on('change', function (e) {
             var county_id = $(this).val();
-            console.log(county_id)
             voivodeship_id = $voivodeshipSelect.val();
-            console.log(voivodeship_id);
             getCities(county_id, voivodeship_id);
         });
-        $voivodeshipSelect.attr("disabled","True");
+        $voivodeshipSelect.on('change', function (e) {
+            $('#regions').remove();
+            $('#cities').remove();
+        });
     }
 
     function getCities(county_id, voivodeship_id) {
@@ -72,14 +72,16 @@ $(function () {
         var $newEl = `
             <div class="form-group" id="cities">
             <label>Gmina:</label>
-            <select name="regions" class="form-control">
+            <select name="municipality_id" class="form-control">
             <option value="0">... wybierz Gminę! ...</option>`;
         for (const el in json) {
             $newEl += `<option value="${el}">${json[el]}</option>\n`;
         }
         $newEl += `</select></div>`;
         $('#regions').after($newEl);
-        $('#regions').find('select').attr("disabled","True");
+        $('#regions').find('select').on('change', function (e) {
+            $('#cities').remove();
+        });
 
     }
 
@@ -96,7 +98,6 @@ $(function () {
 
 
         var src = $(this).attr('src');
-        // console.log(src);
 
         $(this).css({
             'opacity': 0

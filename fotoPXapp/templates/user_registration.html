@@ -3,138 +3,141 @@
 
 <form action="/rejestracja" method="post" enctype="multipart/form-data" id="formRegister" novalidate>
     {% csrf_token %}
-<div class="row registerMainDiv">
-    <div class="col-6 registerLeftDiv">
-        <div class="form-group formGroupFotoPX">
-            {{ form.username.errors }}
-            <label for="{{ form.username.id_for_label }}">nazwa użytkownika</label>
-            {{ form.username }}
+    <div class="row registerMainDiv">
+        <div class="col-6 registerLeftDiv">
+            <div class="form-group formGroupFotoPX">
+                {{ form.username.errors }}
+                {% if error %}
+                    <p class="errorMessageUserRegist">{{ error }}</p>
+                {% endif %}
+                <label for="{{ form.username.id_for_label }}">nazwa użytkownika</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                {{ form.password.errors }}
+                <label for="{{ form.password.id_for_label }}">hasło</label>
+                {{ form.password }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                {{ form.password_check.errors }}
+                <label for="{{ form.password_check.id_for_label }}">potwierdź hasło</label>
+                {{ form.password_check }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                {{ form.first_name.errors }}
+                <label for="{{ form.first_name.id_for_label }}">imię</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                {{ form.last_name.errors }}
+                <label for="{{ form.last_name.id_for_label }}">nazwisko</label>
+                {{ form.last_name }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.email.errors }}
+                    <label for="{{ form.email.id_for_label }}">email</label>
+                    {{ form.email }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.email_privacy.errors }}
+                    <label for="{{ form.email_privacy.id_for_label }}">prywatność email</label>
+                    {{ form.email_privacy }}
+                </div>
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.website.errors }}
+                    <label for="{{ form.website.id_for_label }}">website</label>
+                    {{ form.website }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.website_privacy.errors }}
+                    <label for="{{ form.website_privacy.id_for_label }}">prywatność website</label>
+                    {{ form.website_privacy }}
+                </div>
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.phone.errors }}
+                    <label for="{{ form.phone.id_for_label }}">telefon</label>
+                    {{ form.phone }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.phone_privacy.errors }}
+                    <label for="{{ form.phone_privacy.id_for_label }}">prywatność tel</label>
+                    {{ form.phone_privacy }}
+                </div>
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.skype.errors }}
+                    <label for="{{ form.skype.id_for_label }}">skype</label>
+                    {{ form.skype }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.skype_privacy.errors }}
+                    <label for="{{ form.skype_privacy.id_for_label }}">prywatność skype</label>
+                    {{ form.skype_privacy }}
+                </div>
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.instagram.errors }}
+                    <label for="{{ form.instagram.id_for_label }}">instagram</label>
+                    {{ form.instagram }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.instagram_privacy.errors }}
+                    <label for="{{ form.instagram_privacy.id_for_label }}">prywatność instagram</label>
+                    {{ form.instagram_privacy }}
+                </div>
+            </div>
+            <div class="form-group formGroupFotoPX">
+                <div class="privacyDiv privacyDivLeft">
+                    {{ form.facebook.errors }}
+                    <label for="{{ form.facebook.id_for_label }}">facebook</label>
+                    {{ form.facebook }}
+                </div>
+                <div class="privacyDiv privacyDivRight">
+                    {{ form.facebook_privacy.errors }}
+                    <label for="{{ form.facebook_privacy.id_for_label }}">prywatność facebook</label>
+                    {{ form.facebook_privacy }}
+                </div>
+            </div>
         </div>
-        <div class="form-group formGroupFotoPX">
-            {{ form.password.errors }}
-            <label for="{{ form.password.id_for_label }}">hasło</label>
-            {{ form.password }}
+
+        <div class="col-6 registerRightDiv">
+            <div class="noPicture">
+                <i class="fas fa-user-alt"></i>
+            </div>
+            <div class="form-group formGroupFotoPX avatarUpload">
+                {{ form.avatar_picture.errors }}
+                <label for="{{ form.avatar_picture.id_for_label }}">zdjęcie profilowe</label>
+                {{ form.avatar_picture }}
+            </div>
+            <div class="form-group formGroupFotoPX">
+                {{ form.about_me.errors }}
+                <label class="aboutMeLabel" for="{{ form.about_me.id_for_label }}">O mnie</label>
+                {{ form.about_me }}
+            </div>
+
+            <div class="form-group " id="voivodeship">
+                <label>Wojewodztwo:</label>
+                <select name="voivodeship_id" class="form-control">
+                    <option value="0">... wybierz Województwo! ...</option>
+                    {% for vo in regions %}
+                        <option value="{{ vo.voivodeship_id }}">{{ vo.city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <input type="hidden" name="next" value="{{ request.path }}">
+
         </div>
-        <div class="form-group formGroupFotoPX">
-            {{ form.password_check.errors }}
-            <label for="{{ form.password_check.id_for_label }}">potwierdź hasło</label>
-            {{ form.password_check }}
-        </div>
-        <div class="form-group formGroupFotoPX">
-            {{ form.first_name.errors }}
-            <label for="{{ form.first_name.id_for_label }}">imię</label>
-            {{ form.first_name }}
-        </div>
-        <div class="form-group formGroupFotoPX">
-            {{ form.last_name.errors }}
-            <label for="{{ form.last_name.id_for_label }}">nazwisko</label>
-            {{ form.last_name }}
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.email.errors }}
-                <label for="{{ form.email.id_for_label }}">email</label>
-                {{ form.email }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.email_privacy.errors }}
-                <label for="{{ form.email_privacy.id_for_label }}">prywatność email</label>
-                {{ form.email_privacy }}
-            </div>
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.website.errors }}
-                <label for="{{ form.website.id_for_label }}">website</label>
-                {{ form.website }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.website_privacy.errors }}
-                <label for="{{ form.website_privacy.id_for_label }}">prywatność website</label>
-                {{ form.website_privacy }}
-            </div>
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.phone.errors }}
-                <label for="{{ form.phone.id_for_label }}">telefon</label>
-                {{ form.phone }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.phone_privacy.errors }}
-                <label for="{{ form.phone_privacy.id_for_label }}">prywatność tel</label>
-                {{ form.phone_privacy }}
-            </div>
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.skype.errors }}
-                <label for="{{ form.skype.id_for_label }}">skype</label>
-                {{ form.skype }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.skype_privacy.errors }}
-                <label for="{{ form.skype_privacy.id_for_label }}">prywatność skype</label>
-                {{ form.skype_privacy }}
-            </div>
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.instagram.errors }}
-                <label for="{{ form.instagram.id_for_label }}">instagram</label>
-                {{ form.instagram }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.instagram_privacy.errors }}
-                <label for="{{ form.instagram_privacy.id_for_label }}">prywatność instagram</label>
-                {{ form.instagram_privacy }}
-            </div>
-        </div>
-        <div class="form-group formGroupFotoPX">
-            <div class="privacyDiv privacyDivLeft">
-                {{ form.facebook.errors }}
-                <label for="{{ form.facebook.id_for_label }}">facebook</label>
-                {{ form.facebook }}
-            </div>
-            <div class="privacyDiv privacyDivRight">
-                {{ form.facebook_privacy.errors }}
-                <label for="{{ form.facebook_privacy.id_for_label }}">prywatność facebook</label>
-                {{ form.facebook_privacy }}
-            </div>
-        </div>
+
     </div>
-
-    <div class="col-6 registerRightDiv">
-        <div class="noPicture">
-            <i class="fas fa-user-alt"></i>
-        </div>
-        <div class="form-group formGroupFotoPX avatarUpload">
-            {{ form.avatar_picture.errors }}
-            <label for="{{ form.avatar_picture.id_for_label }}">zdjęcie profilowe</label>
-            {{ form.avatar_picture }}
-        </div>
-        <div class="form-group formGroupFotoPX">
-            {{ form.about_me.errors }}
-            <label class="aboutMeLabel" for="{{ form.about_me.id_for_label }}">O mnie</label>
-            {{ form.about_me }}
-        </div>
-
-        <div class="form-group " id="voivodeship">
-            <label>Wojewodztwo:</label>
-            <select name="regions" class="form-control">
-            <option value="0">... wybierz Województwo! ...</option>
-                {% for vo in regions %}
-                    <option value="{{ vo.voivodeship_id }}">{{ vo.city }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <input type="hidden" name="next" value="{{ request.path }}">
-
-    </div>
-
-</div>
-{#    <input type="submit" value="Submit">#}
-<button type="submit" class="btn btn-primary registerButton">Rejestruj</button>
+    <button type="submit" class="btn btn-primary registerButton">Rejestruj</button>
 </form>
 
 

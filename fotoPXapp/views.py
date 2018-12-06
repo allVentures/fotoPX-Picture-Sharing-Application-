@@ -1,11 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.db.models.aggregates import Avg, Sum
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, HttpRequest, Http404
+from django.views import View
 from django.conf import settings
 from os import path, rename, remove
 from json import dumps
+
+# from psycopg2._psycopg import IntegrityError
+
 from fotoPXapp.models import User, ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters
@@ -45,14 +50,65 @@ class user_registration(View):
                 response_data[el.municipality_id] = el.city
             return HttpResponse(dumps(response_data), content_type="application/json")
 
+    def post(self, request):
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            email = form.cleaned_data["email"]
+            email_privacy = form.cleaned_data["email_privacy"]
+            password = form.cleaned_data["password"]
+            password_check = form.cleaned_data["password_check"]
+            website = form.cleaned_data["website"]
+            website_privacy = form.cleaned_data["website_privacy"]
+            phone = form.cleaned_data["phone"]
+            phone_privacy = form.cleaned_data["phone_privacy"]
+            skype = form.cleaned_data["skype"]
+            skype_privacy = form.cleaned_data["skype_privacy"]
+            instagram = form.cleaned_data["instagram"]
+            instagram_privacy = form.cleaned_data["instagram_privacy"]
+            facebook = form.cleaned_data["facebook"]
+            facebook_privacy = form.cleaned_data["facebook_privacy"]
+            about_me = form.cleaned_data["about_me"]
+            voivodeship_id = request.POST["voivodeship_id"]
+            county_id = request.POST.get("county_id")
+            municipality_id = request.POST.get("municipality_id")
 
-    # def post(self, request):
-    #     voId = request.POST.get('voivodeship_id')
-    #     print(voId)
-    #
-    #     return None
+            try:
+                new_user = User.objects.create_user(
+                    username=username,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    password=password
+                )
+                new_user.save()
+            except IntegrityError:
+                regions = Regions.objects.filter(county_id=None)
+                error = "wprowadzona nazwa użytkownika jest już zajęta, wybierz inną"
+                ctx = {"regions": regions, "form": form, "error": error}
+                return render(request, "user_registration.html", ctx)
+
+            if 'avatar_picture' in request.FILES:
+                avatar_picture = request.FILES["avatar_picture"]
+                im = Image.open(avatar_picture)
+                im.save(settings.MEDIA_ROOT + "xxxxxxxxx.jpg", "JPEG")
+                return  HttpResponse("SAVED")
+            else:
+                return HttpResponse("No Picture")
+                pass
 
 
+
+            return HttpResponse("KONIEC FUNKCJI POST" + first_name + str(voivodeship_id))
+        else:
+            regions = Regions.objects.filter(county_id=None)
+            ctx = {"regions": regions, "form": form}
+            return render(request, "user_registration.html", ctx)
+
+
+# -----User Page------
 class user_page(View):
     def get(self, request, voivodeship, name, id):
         user_data = User.objects.get(id=id)

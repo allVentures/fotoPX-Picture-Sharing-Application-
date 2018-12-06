@@ -1,0 +1,36 @@
+            # username = request.POST.get("username")
+            # first_name = request.POST.get("first_name")
+            # last_name = request.POST.get("last_name")
+            # email = request.POST.get("email")
+            # email_privacy = request.POST.get("email_privacy")
+            # password = request.POST.get("password")
+            # password_check = request.POST.get("password_check")
+            # website = request.POST.get("website")
+            # website_privacy = request.POST.get("website_privacy")
+            # phone = request.POST.get("phone")
+            # phone_privacy = request.POST.get("phone_privacy")
+            # skype = request.POST.get("skype")
+            # skype_privacy = request.POST.get("skype_privacy")
+            # instagram = request.POST.get("instagram")
+            # instagram_privacy = request.POST.get("instagram_privacy")
+            # facebook = request.POST.get("facebook")
+            # facebook_privacy = request.POST.get("facebook_privacy")
+            # about_me = request.POST.get("about_me")
+            # voivodeship_id = request.POST.get("voivodeship_id")
+            # county_id = request.POST.get("county_id")
+            # municipality_id = request.POST.get("municipality_id")
+
+            # if 'avatar_picture' in request.FILES:
+            #     avatar_picture = request.FILES["avatar_picture"]
+            # im = Image.open(avatar_picture)
+            # im.save(settings.MEDIA_ROOT + "xxxxxxxxx.jpg", "JPEG")
+            # return  HttpResponse("SAVED")
+
+            # else:
+            # return HttpResponse("No Picture")
+            # pass
+            #
+
+            # email_privacy = COLOR_CHOICES[int(color)]
+            # return render(request, "set_color.html", {"form": form, "chosen_color": chosen_color})
+            # return render(request, "set_color.html", {"form": form})
