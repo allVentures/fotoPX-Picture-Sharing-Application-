@@ -67,8 +67,8 @@ class PictureCategory(models.Model):
 
 
 class Picture(models.Model):
-    picture = models.ImageField()
-    picture_thumbnail = models.ImageField(null=True)
+    picture = models.ImageField(max_length=160)
+    picture_thumbnail = models.ImageField(null=True, max_length=160)
     th_width = models.IntegerField(null=True)
     th_height = models.IntegerField(null=True)
     title = models.CharField(max_length=160, null=True)

@@ -1,5 +1,8 @@
 import random
+from math import sqrt
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
@@ -11,11 +14,11 @@ from django.views import View
 from django.conf import settings
 from os import path, rename, remove
 from json import dumps
-from fotoPXapp.models import User, ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
+from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
-from fotoPXapp.GlobalFunctions import ReplacePolishCharacters
+from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters
 from PIL import Image
-from fotoPXapp.forms import RegisterForm, LoginForm
+from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm
 
 
 # ------------MAIN PAGE, HEADER , FOOTER-----------------------
@@ -76,20 +79,16 @@ class user_registration(View):
 
             if int(voivodeship_id) == 0:
                 user_region_id = 3000
-                print("1szy ", user_region_id)
             else:
                 if int(county_id) == 0:
                     user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id__isnull=True).id
-                    print("2ci ", user_region_id)
                 else:
                     if int(municipality_id) == 0:
                         user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id=county_id,
                                                              municipality_id__isnull=True).id
-                        print("3ci ", user_region_id)
                     else:
                         user_region_id = Regions.objects.get(voivodeship_id=voivodeship_id, county_id=county_id,
                                                              municipality_id=municipality_id).id
-                        print("4ty ", user_region_id)
 
             errors = {}
             if password != password_check:
@@ -137,7 +136,6 @@ class user_registration(View):
                     im = Image.open(avatar_picture)
                     picture_width = im.size[0]
                     picture_height = im.size[1]
-                    print(picture_height)
                     if picture_width < min_picture_width or picture_height < min_picture_height:
                         avatar_error = "Avatar musi miec min 400px x 400px!"
                         im.close()
@@ -215,7 +213,8 @@ class user_registration(View):
                     new_picture_name = "zdjecie-profilowe-" + new_user.first_name + "-" + new_user.last_name + str(
                         random.randint(1, 1000)) + extension
                 else:
-                    rename(settings.MEDIA_ROOT + str(new_extended_user.avatar_picture), settings.MEDIA_ROOT + new_picture_name)
+                    rename(settings.MEDIA_ROOT + str(new_extended_user.avatar_picture),
+                           settings.MEDIA_ROOT + new_picture_name)
                 new_extended_user.avatar_picture = new_picture_name
                 new_extended_user.save()
 
@@ -239,7 +238,7 @@ class user_registration(View):
                 )
                 return HttpResponse("User Created, NO AVATAR")
 
-            ctx = {"new_user":new_user, "new_extended_user":new_extended_user}
+            ctx = {"new_user": new_user, "new_extended_user": new_extended_user}
             return render(request, "user_registration_response.html", ctx)
         else:
             regions = Regions.objects.filter(county_id=None)
@@ -331,7 +330,10 @@ class PictureView(View):
         picture_owner_info = ExtendUser.objects.get(user_id=picture_owner_id)
         picture_comments = PictureComment.objects.filter(picture_id_id=id)
         average_picture_rating = PictureRating.objects.filter(picture_id_id=id).aggregate(Avg('rating'))
-        average_picture_rating = round(average_picture_rating['rating__avg'], 2)
+        if average_picture_rating['rating__avg'] != None:
+            average_picture_rating = round(average_picture_rating['rating__avg'], 2)
+        else:
+            average_picture_rating = "n/a"
 
         all_commenters = []
         for usr in picture_comments:
@@ -342,6 +344,224 @@ class PictureView(View):
                "commenters_array": all_commenters, "picture_rating": average_picture_rating}
         return render(request, "picture_view.html", ctx)
 
+
+# ----------add picture-----------
+class AddPicture(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self, request):
+        form = AddPictureForm()
+        pass
+        ctx = {"form": form}
+        return render(request, "add_pictures.html", ctx)
+
+    def post(self, request):
+        form = AddPictureForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            picture_category = form.cleaned_data["picture_category"]
+            picture_tags = form.cleaned_data["picture_tags"]
+            picture = request.FILES["picture"]
+
+            # image format validation and dimesions check
+            max_picture_width = 1280
+            min_picture_width = 850
+            min_picture_height = 850
+            max_picture_height = 1280
+
+            try:
+                im = Image.open(picture)
+                picture_width = im.size[0]
+                picture_height = im.size[1]
+                if picture_width < min_picture_width or picture_height < min_picture_height:
+                    picture_error = "Zdjęcie musi miec min 900px x 900px!"
+                    im.close()
+                    ctx = {"form": form, "picture_error": picture_error}
+                    return render(request, "add_pictures.html", ctx)
+            except Exception as picture_error:  # this is gonna be validated by ImageField in Django anyway
+                picture_error = "ten format nie jest dozwolony, dozwolone formaty: jpg, tif, bmp."
+                ctx = {"form": form, "picture_error": picture_error}
+                return render(request, "add_pictures.html", ctx)
+
+            # ---- generate-picture-slug-/ create pic in DB + EXIF ----
+            pic_slug = ""
+            pic_category = PictureCategory.objects.get(id=picture_category).category
+            title = RemoveSpecialCharacters(title)
+            title = title.replace(' ', '-')
+            title = title[0:-1].lower()
+            if len(title) < 5:
+                new_pic_slug = pic_category + "-" + str(random.randint(1, 10000))
+            if len(title) > 100:  # shorten slug to max 100 characters
+                while len(title) > 100:
+                    k = title.rfind("-")
+                    title = title[:k]
+                    new_pic_slug = title
+            else:
+                new_pic_slug = ReplacePolishCharacters(title)
+
+            if Picture.objects.filter(pic_slug=new_pic_slug):
+                new_pic_slug = new_pic_slug + str(random.randint(1, 10000))
+
+            # EXIF, see exif specification at http://www.exiv2.org/tags.html
+            # and https://en.wikipedia.org/wiki/Exposure_value#EV_and_APEX
+            # still testing it
+            exif_tags = im._getexif()
+            if exif_tags != None:
+                try:
+                    # camera_make = exif_tags[271]
+                    camera_model=exif_tags[272]
+                    # lens_make=exif_tags[42036]
+                    focal_length=exif_tags[37386][0]/10
+                    ISO=exif_tags[34855]
+                    shutter_speed_apex=exif_tags[37377][0]/1000000
+                    shutter_speed = 1 / (2 ** shutter_speed_apex)
+                    # aperture_apex=exif_tags[37378][0]/1000000
+                    # aperture=round(sqrt(2**aperture_apex),1)
+                    # print("camera make: ",camera_make)
+                    # print("camera model: ",camera_model)
+                    # print("mm: ", focal_length)
+                    # print("iso: ",ISO)
+                    # print("speed: ",shutter_speed)
+                 #   print("aperture: ", aperture)
+                except Exception as e:
+                    print(e)
+
+                picture = Picture.objects.create(
+                    picture=picture,
+                    title=title,
+                    description=description,
+                    picture_category_id_id=int(picture_category),
+                    picture_user_id_id=request.user.id,
+                    pic_slug=new_pic_slug,
+                    camera_make=camera_model,
+                    focal_length=focal_length,
+                    ISO=ISO,
+                    shutter_speed=shutter_speed,
+                )
+            else:
+                picture = Picture.objects.create(
+                    picture=picture,
+                    title=title,
+                    description=description,
+                    picture_category_id_id=int(picture_category),
+                    picture_user_id_id=request.user.id,
+                    pic_slug=new_pic_slug,
+                )
+
+            # ---- convert and add tags to picture -----
+            picture_tags = RemoveSpecialCharacters(picture_tags).lower()
+            k = len(picture_tags)
+            while k > 6:
+                k = picture_tags.rfind(" ")
+                new_tag = picture_tags[k + 1:]
+                if len(new_tag)>2:
+                    picture_tags = picture_tags[:k]
+                    if Tags.objects.filter(tag=new_tag):
+                        for tag in Tags.objects.filter(tag=new_tag):
+                            PictureTags.objects.create(picture_tag_id=tag.id, picture_id_id=picture.id)
+                    else:
+                        new_tag = ReplacePolishCharacters(new_tag)
+                        new_tag_slug = RemoveSpecialCharacters(new_tag).lower()
+                        new_tag = Tags.objects.create(tag=new_tag, slug=new_tag_slug)
+                        PictureTags.objects.create(picture_tag_id=new_tag.id, picture_id_id=picture.id)
+
+            # -----resize image, convert file to jpg------
+            full_path_to_file = settings.MEDIA_ROOT + str(picture.picture)
+            ratio = picture_width / picture_height
+
+            if picture_width > max_picture_width or picture_height > max_picture_height:
+                if ratio > 1:
+                    picture_height = min_picture_height
+                    picture_width = picture_height * ratio
+                else:
+                    picture_width = min_picture_width
+                    picture_height = picture_width / ratio
+
+            picture_height = int(round(picture_height, 0))
+            picture_width = int(round(picture_width, 0))
+
+            filename, extension = path.splitext((str(picture.picture).lower()))
+            im = im.resize((picture_width, picture_height))
+            outfile = filename + ".jpg"
+
+            if picture.picture != outfile:
+                try:
+                    im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                    picture.picture = outfile
+                except IOError as e:
+                    e = "Ten format pliku nie moze byc skonwertowany do jpg."
+                    return render(request, "standard_error_page.html", {"msg": e})
+
+                except Exception as e:
+                    im.close()
+                    return render(request, "standard_error_page.html", {"msg": e})
+            else:
+                im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                picture.picture = outfile
+                picture.save()
+            im.close()
+
+            # ----picture_rename---category+30characters of title
+            filename, extension = path.splitext(str(picture.picture))
+            if len(new_pic_slug) > 45:  # shorten slug to max 100 characters
+                while len(new_pic_slug) > 45:
+                    k = new_pic_slug.rfind("-")
+                    new_pic_slug = new_pic_slug[:k]
+            new_file_name = new_pic_slug
+            complete_file_name = pic_category + "-" + new_file_name + extension
+            complete_file_name = complete_file_name.replace(' ', '-')
+
+            if Picture.objects.filter(picture=complete_file_name):
+                complete_file_name = pic_category + "-" + new_file_name + "-" + str(random.randint(1, 1000)) + extension
+            rename(settings.MEDIA_ROOT + str(picture.picture), settings.MEDIA_ROOT + complete_file_name)
+            picture.picture = complete_file_name
+            picture.save()
+
+            # ---- create picture thumbnail and add to DB -----
+            max_picture_width = 600
+            min_picture_width = 400
+            min_picture_height = 400
+            max_picture_height = 600
+
+            full_path_to_file = settings.MEDIA_ROOT + str(picture.picture)
+            im = Image.open(full_path_to_file)
+            picture_width = im.size[0]
+            picture_height = im.size[1]
+
+            ratio = picture_width / picture_height
+
+            if picture_width > max_picture_width or picture_height > max_picture_height:
+                if ratio > 1:
+                    picture_height = min_picture_height
+                    picture_width = picture_height * ratio
+                else:
+                    picture_width = min_picture_width
+                    picture_height = picture_width / ratio
+
+            picture_height = int(round(picture_height, 0))
+            picture_width = int(round(picture_width, 0))
+
+            filename, extension = path.splitext((str(picture.picture).lower()))
+            im = im.resize((picture_width, picture_height))
+            outfile = filename + "_thumb.jpg"
+            thumbnail_width = im.size[0]
+            thumbnail_height = im.size[1]
+            im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+            im.close()
+
+            picture.picture_thumbnail = outfile
+            picture.th_height = thumbnail_height
+            picture.th_width = thumbnail_width
+            picture.save()
+
+            ctx = {"picture": picture}
+            return render(request, "picture_upload_response.html", ctx)
+
+        else:
+            ctx = {"form": form}
+            return render(request, "add_pictures.html", ctx)
 
 # -----------------------COMMENTS / RATINGS-----------------------------
 
@@ -357,8 +577,8 @@ class TagView(View):
             ctx = {"msg": "Nie ma takiego Tag'a"}
             return render(request, "standard_error_page.html", ctx)
         ctx = {"pictures": all_tagged_pictures, "tag": tag}
-
         return render(request, "tag_pictures.html", ctx)
+
 
 # -------------------------SYSTEM----------------------------------
 class LoginPage(View):
@@ -372,7 +592,7 @@ class LoginPage(View):
             return render(request, "login_page.html", ctx)
 
     def post(self, request):
-        form = LoginForm(request.POST)
+        form = LoginForm(request.POST, )
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
@@ -384,7 +604,8 @@ class LoginPage(View):
                 msg = 'niepoprawny login, spróbuj ponownie!'
         else:
             return redirect('login')
-        return render(request, "login_page.html", {'form': form, 'msg': msg, "user":User})
+        return render(request, "login_page.html", {'form': form, 'msg': msg, "user": User})
+
 
 class Logout(View):
     def get(self, request):

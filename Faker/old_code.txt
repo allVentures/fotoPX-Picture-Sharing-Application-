@@ -34,3 +34,40 @@
             # email_privacy = COLOR_CHOICES[int(color)]
             # return render(request, "set_color.html", {"form": form, "chosen_color": chosen_color})
             # return render(request, "set_color.html", {"form": form})
+
+
+
+
+
+                       # # EXIF, see exif specification at http://www.exiv2.org/tags.html
+            # # and https://en.wikipedia.org/wiki/Exposure_value#EV_and_APEX
+            # full_path_to_file = settings.MEDIA_ROOT + str(picture.picture)
+            # im = Image.open(full_path_to_file)
+            #
+            # exif_tags = im._getexif()
+            # if exif_tags != None:
+            # # wanted_exif_codes = {
+            # #     "camera_make": 271,
+            # #     "camera_model": 272,
+            # #     "lens": 42036,
+            # #     "ISO" : 34855,
+            # # }
+            # #
+            #     camera_make = exif_tags[271]
+            #     camera_model=exif_tags[272]
+            #     # lens_make=exif_tags[42036]
+            #     focal_length=exif_tags[37386][0]
+            #     ISO=exif_tags[34855]
+            #     shutter_speed_apex=exif_tags[37377][0]/1000000
+            #     shutter_speed = 1 / (2 ** shutter_speed_apex)
+            #     aperture_apex=exif_tags[37378][0]/1000000
+            #     aperture=round(sqrt(2**aperture_apex),1)
+            #     print("camera make: ",camera_make)
+            #     print("camera model: ",camera_model)
+            #     print("mm: ", focal_length)
+            #     print("iso: ",ISO)
+            #     print("speed: ",shutter_speed)
+            #     print("aperture: ", aperture)
+
+
+

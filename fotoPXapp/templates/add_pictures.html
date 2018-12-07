@@ -1,0 +1,46 @@
+{% include  "header.html" %}
+<h3 class="h3FotoPx">dodaj nowe zdjęcie</h3>
+
+<div class="addPicturesDiv">
+
+    <form class="formAddPicture" action="/dodaj-zdjecie" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <p class="errorMessageUserForm">{{ picture_error }}</p>
+        <div class="form-group formGroupFotoPX pictureUpload">
+            {{ form.picture.errors }}
+            <label for="{{ form.picture.id_for_label }}">zdjęcie</label>
+            {{ form.picture }}
+        </div>
+
+        <div class="form-group formGroupFotoPX">
+            {{ form.title.errors }}
+            <label for="{{ form.title.id_for_label }}">tytuł zdjęcia</label>
+            {{ form.title }}
+        </div>
+
+        <div class="form-group formGroupFotoPX">
+            {{ form.picture_category.errors }}
+            <label for="{{ form.picture_category.id_for_label }}">kategoria zdjęcia</label>
+            {{ form.picture_category }}
+        </div>
+
+        <div class="form-group formGroupFotoPX">
+            {{ form.description.errors }}
+            <label class="aboutMeLabel" for="{{ form.description.id_for_label }}">opis zdjęcia</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group formGroupFotoPX">
+            {{ form.picture_tags.errors }}
+            <label class="aboutMeLabel" for="{{ form.picture_tags.id_for_label }}">tagi</label>
+            {{ form.picture_tags }}
+        </div>
+
+        <button type="submit" class="btn btn-primary uploadPicBtn">dodaj zdjęcie</button>
+    </form>
+
+</div>
+
+{% include "footer.html" %}
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias cum exercitationem id magnam pariatur ratione reiciendis sapiente voluptatibus. Ab ad animi at dignissimos hic nam odio quis sequi totam vero.

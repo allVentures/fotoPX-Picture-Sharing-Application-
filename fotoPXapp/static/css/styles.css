@@ -364,7 +364,7 @@ ul.errorlist {
     font-style: italic;
 }
 
-.errorMessageUserRegist {
+.errorMessageUserForm {
     margin: 0;
     color: red;
     padding: 0;
@@ -403,4 +403,28 @@ ul.errorlist {
     align-items: center;
     justify-content: center;
     text-align: center
+}
+
+/*----------------ADD PICTURES------------------*/
+.addPicturesDiv {
+    width: 70%;
+    display: block;
+    margin: 0 auto;
+}
+
+.formAddPicture {
+    display: block;
+    margin-top: 30px;
+}
+
+.pictureUpload {
+    width: 100%;
+}
+
+.uploadPicBtn{
+    margin-top: 10px;
+}
+
+.pictureUpload {
+    margin-bottom: 20px;
 }

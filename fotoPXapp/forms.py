@@ -59,3 +59,25 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Password", max_length=32,
                                widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "hasło"}),
                                error_messages={'required': 'to pole jest wymagane'})
+
+
+
+class AddPictureForm(forms.Form):
+    CAT = []
+    categories = PictureCategory.objects.all()
+    for cat in categories:
+        CAT.append((cat.id,cat.category))
+        CATEGORIES = tuple(CAT)
+
+    picture = forms.ImageField(label="picture", max_length=160, required=True, error_messages={
+        'invalid_image': 'zaladuj poprawny plik ze zdjeciem. dozwolone formaty: .jpg, .tif, .bmp',
+        'required': 'musisz wybrać zdjęcie'})
+    title = forms.CharField(label="title", required=False, max_length=160,
+                            widget=forms.TextInput( attrs={"class": "form-control"}))
+    description = forms.CharField(label="description", required=False, max_length=512, widget=forms.Textarea(
+        attrs={"class": "form-control"}))
+    picture_category = forms.CharField(label="category", required=True,
+                                       widget=forms.Select(choices=CATEGORIES, attrs={"class": "form-control"}),
+                                       error_messages={'required': 'to pole jest wymagane'})
+    picture_tags = forms.CharField(label="picture_tags", required=False,
+                                   widget=forms.TextInput(attrs={"class": "form-control"}), max_length=256)

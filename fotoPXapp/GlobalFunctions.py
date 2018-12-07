@@ -11,7 +11,7 @@ def ReplacePolishCharacters(text):
     return text
 
 def RemoveSpecialCharacters(text):
-    text = re.sub('[^A-Za-z0-9]+', '', text)
+    text = re.sub('[^A-Za-z0-9]+', ' ', text)
     # output = output.replace(' ', '-')
     # output = output[0:-1].lower()
     return text
