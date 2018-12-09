@@ -8,3 +8,13 @@
     <li>Pillow</li>
     <li>Django JET </li>
 </ul>
+<p>development ongoing, at this moment working functionality as below:</p>
+<ul>
+    <li>Picture View</li>
+    <li>Picture gallery view (categories, tags)</li>
+    <li>User Page view</li>
+    <li>login</li>
+    <li>User Registration</li>
+    <li>Picture Upload</li>
+    <li>admin panel</li>
+</ul>
