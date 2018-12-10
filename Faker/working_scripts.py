@@ -1,3 +1,5 @@
+from math import sqrt
+
 from django.contrib.auth.models import User
 from os import path, rename, remove
 import re
@@ -339,7 +341,45 @@ fake = Faker('pl_PL')
 #     el.slug=slug
 #     el.save()
 
+# ---------------------EXIF DATA----------------------
 
+# full_path_to_file = "dubai_exif.jpg"
+# full_path_to_file = "Story_picture_3__2011_12_16_Lost_in_Bangkok_RAW_123AB.jpg"
+# full_path_to_file = "APH_7468.jpg"
+# full_path_to_file = "Commercial-Food-Restaurant1.jpg"
+# full_path_to_file = "pies_damsung.jpg"
+
+
+# ull_path_to_file = "2010_12_16_Ferrari_Shoot_RAW_447_ps.jpg"
+#
+# im = Image.open(full_path_to_file)
+#
+# exif_tags = im._getexif()
+# if exif_tags != None:
+#     date_taken= exif_tags[36867]
+#     camera_make = exif_tags[271]
+#     camera_model = exif_tags[272]
+#
+#     # lens_make=exif_tags[42035]
+#
+#     focal_length = exif_tags[37386][0] / 10
+#     ISO = exif_tags[34855]
+#     shutter_speed_apex = exif_tags[37377][0] / 1000000
+#     shutter_speed = 1 / (2 ** shutter_speed_apex)
+#     exposure_time = str(round(exif_tags[33434][0]/10))+"/"+str( exif_tags[33434][1])
+#     aperture_apex = exif_tags[37378][0] / 1000000
+#     aperture = round(sqrt(2 ** aperture_apex), 1)
+#     FNumber = exif_tags[33437][0]/exif_tags[33437][1]
+#     print("date",date_taken)
+#     print("camera make: ", camera_make)
+#     print("camera model: ", camera_model)
+#     # print("lens: ", lens_make)
+#     print("mm: ", focal_length)
+#     print("iso: ", ISO)
+#     print("speed: ", shutter_speed)
+#     print("exposure time: ", exposure_time)
+#     print("aperture: ", aperture)
+#     print("Fnumber: ", FNumber)
 
 # -----------------------------------------------------------------------------------------------------------------------
 # odpalamy w konsoli

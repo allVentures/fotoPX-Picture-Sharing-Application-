@@ -189,7 +189,7 @@ class user_registration(View):
 
                 if new_extended_user.avatar_picture != outfile:
                     try:
-                        im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                        im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
                         new_extended_user.avatar_picture = outfile
                     except IOError as e:
                         e = "Ten format pliku nie moze byc skonwertowany do jpg."
@@ -199,7 +199,7 @@ class user_registration(View):
                         im.close()
                         return render(request, "standard_error_page.html", {"msg": e})
                 else:
-                    im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                    im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
                     new_extended_user.picture = outfile
                     new_extended_user.save()
 
@@ -411,11 +411,11 @@ class AddPicture(LoginRequiredMixin, View):
             if exif_tags != None:
                 try:
                     # camera_make = exif_tags[271]
-                    camera_model=exif_tags[272]
+                    camera_model = exif_tags[272]
                     # lens_make=exif_tags[42036]
-                    focal_length=exif_tags[37386][0]/10
-                    ISO=exif_tags[34855]
-                    shutter_speed_apex=exif_tags[37377][0]/1000000
+                    focal_length = exif_tags[37386][0] / 10
+                    ISO = exif_tags[34855]
+                    shutter_speed_apex = exif_tags[37377][0] / 1000000
                     shutter_speed = 1 / (2 ** shutter_speed_apex)
                     # aperture_apex=exif_tags[37378][0]/1000000
                     # aperture=round(sqrt(2**aperture_apex),1)
@@ -424,7 +424,7 @@ class AddPicture(LoginRequiredMixin, View):
                     # print("mm: ", focal_length)
                     # print("iso: ",ISO)
                     # print("speed: ",shutter_speed)
-                 #   print("aperture: ", aperture)
+                #   print("aperture: ", aperture)
                 except Exception as e:
                     print(e)
 
@@ -452,18 +452,22 @@ class AddPicture(LoginRequiredMixin, View):
 
             # ---- convert and add tags to picture -----
             picture_tags = RemoveSpecialCharacters(picture_tags).lower()
+
             k = len(picture_tags)
             while k > 6:
                 k = picture_tags.rfind(" ")
                 new_tag = picture_tags[k + 1:]
-                if len(new_tag)>2:
-                    picture_tags = picture_tags[:k]
+                picture_tags = picture_tags[:k]
+                if len(new_tag) > 2:
                     if Tags.objects.filter(tag=new_tag):
                         for tag in Tags.objects.filter(tag=new_tag):
-                            PictureTags.objects.create(picture_tag_id=tag.id, picture_id_id=picture.id)
+                            if not PictureTags.objects.filter(picture_tag_id=tag.id, picture_id_id=picture.id):
+                                PictureTags.objects.create(picture_tag_id=tag.id, picture_id_id=picture.id)
                     else:
-                        new_tag = ReplacePolishCharacters(new_tag)
-                        new_tag_slug = RemoveSpecialCharacters(new_tag).lower()
+                        new_tag_slug = ReplacePolishCharacters(new_tag)
+                        # check if slug exist, it may happen for words without Polish characters (error fixed)
+                        if Tags.objects.filter(slug=new_tag_slug):
+                            new_tag_slug = new_tag_slug + "-" + str(random.randint(1, 10))
                         new_tag = Tags.objects.create(tag=new_tag, slug=new_tag_slug)
                         PictureTags.objects.create(picture_tag_id=new_tag.id, picture_id_id=picture.id)
 
@@ -485,11 +489,13 @@ class AddPicture(LoginRequiredMixin, View):
             filename, extension = path.splitext((str(picture.picture).lower()))
             im = im.resize((picture_width, picture_height))
             outfile = filename + ".jpg"
+            old_file = str(picture.picture)
 
             if picture.picture != outfile:
                 try:
-                    im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                    im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
                     picture.picture = outfile
+                    remove(settings.MEDIA_ROOT+old_file)
                 except IOError as e:
                     e = "Ten format pliku nie moze byc skonwertowany do jpg."
                     return render(request, "standard_error_page.html", {"msg": e})
@@ -498,10 +504,13 @@ class AddPicture(LoginRequiredMixin, View):
                     im.close()
                     return render(request, "standard_error_page.html", {"msg": e})
             else:
-                im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+                im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
                 picture.picture = outfile
                 picture.save()
             im.close()
+
+
+            print("first image save, filename: ", outfile)
 
             # ----picture_rename---category+30characters of title
             filename, extension = path.splitext(str(picture.picture))
@@ -548,7 +557,7 @@ class AddPicture(LoginRequiredMixin, View):
             outfile = filename + "_thumb.jpg"
             thumbnail_width = im.size[0]
             thumbnail_height = im.size[1]
-            im.save(settings.MEDIA_ROOT + outfile, "JPEG")
+            im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
             im.close()
 
             picture.picture_thumbnail = outfile
@@ -562,6 +571,7 @@ class AddPicture(LoginRequiredMixin, View):
         else:
             ctx = {"form": form}
             return render(request, "add_pictures.html", ctx)
+
 
 # -----------------------COMMENTS / RATINGS-----------------------------
 

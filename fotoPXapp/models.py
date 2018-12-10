@@ -132,5 +132,4 @@ class PictureTags(models.Model):
     picture_tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
     tag_date = models.DateTimeField(auto_now_add=True)
 
-# add later:
-# - url slugr for Pictures/Tags/Users
+
