@@ -1,5 +1,4 @@
 import random
-from math import sqrt
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,7 +15,7 @@ from os import path, rename, remove
 from json import dumps
 from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
-from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters
+from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData
 from PIL import Image
 from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm
 
@@ -365,7 +364,7 @@ class AddPicture(LoginRequiredMixin, View):
             picture_tags = form.cleaned_data["picture_tags"]
             picture = request.FILES["picture"]
 
-            # image format validation and dimesions check
+            # image format validation and dimensions check
             max_picture_width = 1280
             min_picture_width = 850
             min_picture_height = 850
@@ -388,9 +387,10 @@ class AddPicture(LoginRequiredMixin, View):
             # ---- generate-picture-slug-/ create pic in DB + EXIF ----
             pic_slug = ""
             pic_category = PictureCategory.objects.get(id=picture_category).category
-            title = RemoveSpecialCharacters(title)
+            pic_title = RemoveSpecialCharacters(title)
+            title = ReplacePolishCharacters(pic_title)
             title = title.replace(' ', '-')
-            title = title[0:-1].lower()
+            title = title.lower()
             if len(title) < 5:
                 new_pic_slug = pic_category + "-" + str(random.randint(1, 10000))
             if len(title) > 100:  # shorten slug to max 100 characters
@@ -399,56 +399,31 @@ class AddPicture(LoginRequiredMixin, View):
                     title = title[:k]
                     new_pic_slug = title
             else:
-                new_pic_slug = ReplacePolishCharacters(title)
+                new_pic_slug = title
 
             if Picture.objects.filter(pic_slug=new_pic_slug):
                 new_pic_slug = new_pic_slug + str(random.randint(1, 10000))
 
-            # EXIF, see exif specification at http://www.exiv2.org/tags.html
-            # and https://en.wikipedia.org/wiki/Exposure_value#EV_and_APEX
-            # still testing it
-            exif_tags = im._getexif()
-            if exif_tags != None:
-                try:
-                    # camera_make = exif_tags[271]
-                    camera_model = exif_tags[272]
-                    # lens_make=exif_tags[42036]
-                    focal_length = exif_tags[37386][0] / 10
-                    ISO = exif_tags[34855]
-                    shutter_speed_apex = exif_tags[37377][0] / 1000000
-                    shutter_speed = 1 / (2 ** shutter_speed_apex)
-                    # aperture_apex=exif_tags[37378][0]/1000000
-                    # aperture=round(sqrt(2**aperture_apex),1)
-                    # print("camera make: ",camera_make)
-                    # print("camera model: ",camera_model)
-                    # print("mm: ", focal_length)
-                    # print("iso: ",ISO)
-                    # print("speed: ",shutter_speed)
-                #   print("aperture: ", aperture)
-                except Exception as e:
-                    print(e)
+            #--save EXIF--
 
-                picture = Picture.objects.create(
-                    picture=picture,
-                    title=title,
-                    description=description,
-                    picture_category_id_id=int(picture_category),
-                    picture_user_id_id=request.user.id,
-                    pic_slug=new_pic_slug,
-                    camera_make=camera_model,
-                    focal_length=focal_length,
-                    ISO=ISO,
-                    shutter_speed=shutter_speed,
-                )
-            else:
-                picture = Picture.objects.create(
-                    picture=picture,
-                    title=title,
-                    description=description,
-                    picture_category_id_id=int(picture_category),
-                    picture_user_id_id=request.user.id,
-                    pic_slug=new_pic_slug,
-                )
+            exif_tags = GetExifData(im)
+
+            picture = Picture.objects.create(
+                picture=picture,
+                title=pic_title,
+                description=description,
+                picture_category_id_id=int(picture_category),
+                picture_user_id_id=request.user.id,
+                pic_slug=new_pic_slug,
+                camera_make=exif_tags["camera_make"],
+                focal_length=exif_tags["focal_lenght"],
+                ISO=exif_tags["iso"],
+                shutter_speed=exif_tags["exposure_time"],
+                f_stop=exif_tags["f_stop"],
+                lens=exif_tags["lens"],
+                camera_model = exif_tags["camera_model"],
+                creation_date= exif_tags["date_taken"],
+            )
 
             # ---- convert and add tags to picture -----
             picture_tags = RemoveSpecialCharacters(picture_tags).lower()
@@ -495,7 +470,7 @@ class AddPicture(LoginRequiredMixin, View):
                 try:
                     im.save(settings.MEDIA_ROOT + outfile, "JPEG", quality=90)
                     picture.picture = outfile
-                    remove(settings.MEDIA_ROOT+old_file)
+                    remove(settings.MEDIA_ROOT + old_file)
                 except IOError as e:
                     e = "Ten format pliku nie moze byc skonwertowany do jpg."
                     return render(request, "standard_error_page.html", {"msg": e})
@@ -508,7 +483,6 @@ class AddPicture(LoginRequiredMixin, View):
                 picture.picture = outfile
                 picture.save()
             im.close()
-
 
             print("first image save, filename: ", outfile)
 

@@ -58,15 +58,15 @@
                 <td>{{ picture_rating }}</td>
             </tr>
             <tr>
-                <th scope="row">liczba odsłon</th>
+                <th scope="row">liczba odsłon:</th>
                 <td>{{ picture.views }}</td>
             </tr>
             <tr>
-                <th scope="row">Dodano</th>
+                <th scope="row">dodano:</th>
                 <td>{{ picture.upload_date |date:"Y-m-d" }}</td>
             </tr>
             <tr>
-                <th scope="row">Kategoria</th>
+                <th scope="row">kategoria:</th>
                 <td>
                     <a href="/kategoria/{{ picture.picture_category_id.category_slug }}/{{ picture.picture_category_id_id }}">{{ picture.picture_category_id }}</a>
                 </td>
@@ -79,28 +79,56 @@
         <table class="table">
             <tbody>
             <tr>
-                <th scope="row">Aparat:</th>
+                <th scope="row">producent:</th>
                 <td>{{ picture.camera_make }}</td>
             </tr>
             <tr>
-                <th scope="row">Obiektyw</th>
+                <th scope="row">aparat:</th>
+                <td>{{ picture.camera_model }}</td>
+            </tr>
+            <tr>
+                <th scope="row">obiektyw</th>
                 <td>{{ picture.lens }}</td>
             </tr>
             <tr>
-                <th scope="row">Ogniskowa</th>
-                <td>{{ picture.focal_length }} mm</td>
+                <th scope="row">ogniskowa</th>
+                {% if picture.focal_length %}
+                    <td>{{ picture.focal_length }} mm</td>
+                {% else %}
+                    <td>n/a</td>
+                {% endif %}
             </tr>
             <tr>
-                <th scope="row">Przeslona:</th>
-                <td>f/{{ picture.f_stop }}</td>
+                <th scope="row">przeslona:</th>
+                {% if picture.f_stop %}
+                    <td>f / {{ picture.f_stop }}</td>
+                {% else %}
+                    <td>n/a</td>
+                {% endif %}
             </tr>
             <tr>
-                <th scope="row">Czas naświetlania</th>
-                <td>{{ picture.shutter_speed }}</td>
+                <th scope="row">czas naświetlania</th>
+                {% if picture.shutter_speed %}
+                    <td>{{ picture.shutter_speed }} s</td>
+                {% else %}
+                    <td>n/a</td>
+                {% endif %}
             </tr>
             <tr>
                 <th scope="row">ISO</th>
-                <td>{{ picture.ISO }}</td>
+                {% if picture.ISO %}
+                    <td>{{ picture.ISO }}</td>
+                {% else %}
+                    <td>n/a</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <th scope="row">zdjęcie wykonano:</th>
+                {% if picture.creation_date %}
+                    <td>{{ picture.creation_date | date:"Y-m-d" }}</td>
+                {% else %}
+                    <td>n/a</td>
+                {% endif %}
             </tr>
             </tbody>
         </table>
@@ -113,6 +141,5 @@
         {% endfor %}
     </div>
 </div>
-
 
 {% include "footer.html" %}

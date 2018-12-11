@@ -1,4 +1,5 @@
 from math import sqrt
+from PIL.ExifTags import TAGS
 
 from django.contrib.auth.models import User
 from os import path, rename, remove
@@ -51,6 +52,8 @@ from PIL import Image
 
 # --------------------------------FAKER-------------------------------------------
 fake = Faker('pl_PL')
+
+
 # email = fake.email()
 # first_name = fake.first_name()
 # last_name = fake.last_name()
@@ -342,44 +345,111 @@ fake = Faker('pl_PL')
 #     el.save()
 
 # ---------------------EXIF DATA----------------------
-
+# def getExifData(full_path_to_file):
+#     from PIL import Image
+#     from PIL.ExifTags import TAGS
+#     from math import sqrt
+#
+#     im = Image.open(full_path_to_file)
+#
+#     exif_tags = im._getexif()
+#     if exif_tags != None:
+#         # print all avilable exif TAGS codes and descriptions
+#         for key in exif_tags:
+#             try:
+#                 print(key, ":", TAGS[key]);
+#             except Exception as e:
+#                 print("blad", e)
+#         # test tags
+#         date_taken = exif_tags[36867]
+#         camera_make = exif_tags[271]
+#         camera_model = exif_tags[272]
+#
+#         try:
+#             print("lens:", exif_tags[42036])
+#         except Exception:
+#             print("no lens info")
+#
+#         # lens_make=exif_tags[42035]
+#
+#         try:
+#             focal_length = round(exif_tags[37386][0] / exif_tags[37386][1])
+#         except Exception:
+#             focal_length = "n/a"
+#
+#         try:
+#             ISO = exif_tags[34855]
+#         except Exception:
+#             ISO = "n/a"
+#         # shutter_speed_apex = exif_tags[37377][0] / 1000000
+#         # shutter_speed = round(1/(1 / (2 ** shutter_speed_apex)))
+#
+#         exposure_time = round((exif_tags[33434][1] / exif_tags[33434][0]), 5)
+#         print(exposure_time)
+#         print("EXPOSURE: ", exif_tags[33434])
+#         if exposure_time > 1:
+#             exposure_time = "1/"+str(round(exposure_time))+" s"
+#         else:
+#             exposure_time = str(round(1/exposure_time,1))+" s"
+#
+#         try:
+#             aperture_apex = exif_tags[37378][0] / 1000000
+#             aperture = round(sqrt(2 ** aperture_apex), 1)
+#         except Exception:
+#             aperture = "n/a"
+#         FNumber = exif_tags[33437][0] / exif_tags[33437][1]
+#         print("date: ", date_taken)
+#         print("camera make: ", camera_make)
+#         print("camera model: ", camera_model)
+#         # print("lens: ", lens_make)
+#         print("mm: ", focal_length)
+#         print("iso: ", ISO)
+#         # print("speed: ", shutter_speed)
+#         print("exposure time: ", exposure_time)
+#         print("aperture: ", aperture)
+#         print("Fnumber: ", FNumber)
+#
+#
+# # ----TEST IMAGES -- for exif
 # full_path_to_file = "dubai_exif.jpg"
+# getExifData(full_path_to_file)
 # full_path_to_file = "Story_picture_3__2011_12_16_Lost_in_Bangkok_RAW_123AB.jpg"
+# getExifData(full_path_to_file)
 # full_path_to_file = "APH_7468.jpg"
 # full_path_to_file = "Commercial-Food-Restaurant1.jpg"
+# getExifData(full_path_to_file)
 # full_path_to_file = "pies_damsung.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "2010_12_16_Ferrari_Shoot_RAW_447_ps.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "2010_06_13_Julia_RAW_300.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "APH_6702.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "dscf2127.jpg" #FUJI
+# getExifData(full_path_to_file)
+# full_path_to_file = "Cat004849C.JPG" #Lumix
+# getExifData(full_path_to_file)
+# full_path_to_file = "APH_7468.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "Death-Valley-NP-5.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "moon-1-35.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "Julia-Anna-Gospodarou_Fujifilm-GFX-50S_Long-Exposure-270-sec_800.jpg"  # only copyrights exif data
+# getExifData(full_path_to_file)
+# full_path_to_file = "IMG_4412.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "nikon_d80.jpg"
+# getExifData(full_path_to_file)
+# full_path_to_file = "nikon_d300.JPG"
+# getExifData(full_path_to_file)
+# full_path_to_file = "nikon_d70.JPG"
+# getExifData(full_path_to_file)
+# full_path_to_file = "long_exposure.JPG"
+# getExifData(full_path_to_file)
 
 
-# ull_path_to_file = "2010_12_16_Ferrari_Shoot_RAW_447_ps.jpg"
-#
-# im = Image.open(full_path_to_file)
-#
-# exif_tags = im._getexif()
-# if exif_tags != None:
-#     date_taken= exif_tags[36867]
-#     camera_make = exif_tags[271]
-#     camera_model = exif_tags[272]
-#
-#     # lens_make=exif_tags[42035]
-#
-#     focal_length = exif_tags[37386][0] / 10
-#     ISO = exif_tags[34855]
-#     shutter_speed_apex = exif_tags[37377][0] / 1000000
-#     shutter_speed = 1 / (2 ** shutter_speed_apex)
-#     exposure_time = str(round(exif_tags[33434][0]/10))+"/"+str( exif_tags[33434][1])
-#     aperture_apex = exif_tags[37378][0] / 1000000
-#     aperture = round(sqrt(2 ** aperture_apex), 1)
-#     FNumber = exif_tags[33437][0]/exif_tags[33437][1]
-#     print("date",date_taken)
-#     print("camera make: ", camera_make)
-#     print("camera model: ", camera_model)
-#     # print("lens: ", lens_make)
-#     print("mm: ", focal_length)
-#     print("iso: ", ISO)
-#     print("speed: ", shutter_speed)
-#     print("exposure time: ", exposure_time)
-#     print("aperture: ", aperture)
-#     print("Fnumber: ", FNumber)
 
 # -----------------------------------------------------------------------------------------------------------------------
 # odpalamy w konsoli

@@ -80,11 +80,13 @@ class Picture(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     # EXIF data for picture
     camera_make = models.CharField(max_length=64, null=True)
+    camera_model = models.CharField(max_length=64, null=True)
     lens = models.CharField(max_length=128, null=True)
     focal_length = models.IntegerField(null=True)
     ISO = models.IntegerField(null=True)
     f_stop = models.FloatField(null=True)
-    shutter_speed = models.FloatField(null=True)
+    shutter_speed = models.CharField(max_length=8, null=True)
+    creation_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return "%s" % (self.title)
@@ -131,5 +133,3 @@ class PictureTags(models.Model):
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     picture_tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
     tag_date = models.DateTimeField(auto_now_add=True)
-
-
