@@ -1,7 +1,6 @@
 from io import BytesIO
 from PIL import Image
 from django.contrib.auth.models import AnonymousUser, User
-from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import response
 from django.test import RequestFactory, TestCase
@@ -17,49 +16,49 @@ from fotoPXapp.views import AddPicture
 
 # access to upload picture page only to logged users
 # admin is logged, user is not logged
-# class AccesstoUploadPicturePage(TestCase):
-#     def setUp(self):
-#         self.user = User.objects.create_user(username="user", password="123", email="paw@ww.pl")
-#         self.admin = User.objects.create_superuser(username="admin", password="123", email="ww@woep.pl")
-#         self.admin_client = Client()
-#         self.user_client = Client()
-#         self.admin_client.login(username='admin', password='123')
-#         # user in not logged in
-#
-#     def test_add_picture_page_access(self):
-#         response = self.admin_client.get(reverse('add_picture'))
-#         self.assertEqual(response.status_code, 200)
-#         response = self.user_client.get(reverse('add_picture'))
-#         self.assertEqual(response.status_code, 302)  # 302 Found redirect status response
+class AccesstoUploadPicturePage(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="user", password="123", email="paw@ww.pl")
+        self.admin = User.objects.create_superuser(username="admin", password="123", email="ww@woep.pl")
+        self.admin_client = Client()
+        self.user_client = Client()
+        self.admin_client.login(username='admin', password='123')
+        # user in not logged in
+
+    def test_add_picture_page_access(self):
+        response = self.admin_client.get(reverse('add_picture'))
+        self.assertEqual(response.status_code, 200)
+        response = self.user_client.get(reverse('add_picture'))
+        self.assertEqual(response.status_code, 302)  # 302 Found redirect status response
 
 # ---- user login form----
-# class UserLoginForm(TestCase):
-#     def setUp(self):
-#         self.user = User.objects.create_user(username="user", password="123", email="paw@ww.pl")
-#         self.user_client = Client()
-#
-#     def test_LoginForm_valid(self):
-#         form = LoginForm(data={
-#             'username': "user",
-#             'password': "123",
-#         })
-#         self.assertTrue(form.is_valid())
-#
-#     def test_LoginForm_Notvalid(self):
-#         form = LoginForm(data={
-#             'username': "",
-#             'password': "user1234333",
-#         })
-#         self.assertFalse(form.is_valid())
-#
-#     def test_loginValid(self):
-#         user_login = self.user_client.login(username='user', password='123')
-#         self.assertTrue(user_login)
-#
-#     def test_loginInValid(self):
-#         user_login = self.user_client.login(username='user', password='12ddd3')
-#         self.assertFalse(user_login)
-#
+class UserLoginForm(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="user", password="123", email="paw@ww.pl")
+        self.user_client = Client()
+
+    def test_LoginForm_valid(self):
+        form = LoginForm(data={
+            'username': "user",
+            'password': "123",
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_LoginForm_Notvalid(self):
+        form = LoginForm(data={
+            'username': "",
+            'password': "user1234333",
+        })
+        self.assertFalse(form.is_valid())
+
+    def test_loginValid(self):
+        user_login = self.user_client.login(username='user', password='123')
+        self.assertTrue(user_login)
+
+    def test_loginInValid(self):
+        user_login = self.user_client.login(username='user', password='12ddd3')
+        self.assertFalse(user_login)
+
 
 
 # ----------Picture upload tests--------------
@@ -73,64 +72,79 @@ class PictureUpload(TestCase):
         user_login = self.user_client.login(username='user', password='123')
         self.assertTrue(user_login)
         self.factory = RequestFactory()
+        PictureCategory.objects.create(category="moda", category_slug="moda-fashion")
+        PictureCategory.objects.create(category="landscape", category_slug="landscape")
 
-    # # Valid Form Data
-    # def test_PictureUploadForm_valid(self):
-    #     picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
-    #     data = {
-    #         'title': "test title for picture upload",
-    #         'description': "123 d fsdfds gs g ggs g sgs ",
-    #         'picture_tags': "r rr r rrrrrrrr rrrr",
-    #         'picture_category': 1}
-    #
-    #     picture_file = open(picture_file, 'rb')
-    #     picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
-    #     files = {'picture': picture_file}
-    #
-    #     form = AddPictureForm(data=data, files=files)
-    #     self.assertTrue(form.is_valid(), form.errors)
-    #
-    # # Too long title => Ensure this value has at most 160 characters (it has 252)
-    # def test_PictureUploadFormNotvalid1(self):
-    #     picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
-    #     data = {
-    #         'title': "test title for picture upload test title for picture uploadtest title for picture uploadtest "
-    #                  "title for picture uploadtest title for picture uploadtitle for picture uploadtest title for "
-    #                  "picture uploadtitle for picture uploadtest title for picture upload",
-    #         'description': "123 d fsdfds gs g ggs g sgs ",
-    #         'picture_tags': "r rr r rrrrrrrr rrrr",
-    #         'picture_category': 1}
-    #
-    #     picture_file = open(picture_file, 'rb')
-    #     picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
-    #     files = {'picture': picture_file}
-    #
-    #     form = AddPictureForm(data=data, files=files)
-    #     self.assertFalse(form.is_valid(), form.errors)
-    #
-    # # No picture file = > musisz wybrać zdjęcie
-    # def test_PictureUploadFormNotvalid2(self):
-    #     picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
-    #     data = {
-    #         'title': "test title for picture upload test",
-    #         'description': "123 d fsdfds gs g ggs g sgs ",
-    #         'picture_tags': "r rr r rrrrrrrr rrrr",
-    #         'picture_category': 1}
-    #
-    #     picture_file = open(picture_file, 'rb')
-    #     picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
-    #     files = {'picture': None}
-    #
-    #     form = AddPictureForm(data=data, files=files)
-    #     self.assertFalse(form.is_valid(), form.errors)
-    # ADD CLOSE
+    # Valid Form Data
+    def test_PictureUploadForm_valid(self):
+        picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
+        data = {
+            'title': "test title for picture upload",
+            'description': "123 d fsdfds gs g ggs g sgs ",
+            'picture_tags': "r rr r rrrrrrrr rrrr",
+            'picture_category': 1}
 
-# ---- test of the class AddPicture(LoginRequiredMixin, View):
+        picture_file = open(picture_file, 'rb')
+        picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
+        files = {'picture': picture_file}
+
+        form = AddPictureForm(data=data, files=files)
+        self.assertTrue(form.is_valid(), form.errors)
+        picture_file.close()
+
+    # Too long title => Ensure this value has at most 160 characters (it has 252)
+    def test_PictureUploadFormNotvalid1(self):
+        picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
+        data = {
+            'title': "test title for picture upload test title for picture uploadtest title for picture uploadtest "
+                     "title for picture uploadtest title for picture uploadtitle for picture uploadtest title for "
+                     "picture uploadtitle for picture uploadtest title for picture upload",
+            'description': "123 d fsdfds gs g ggs g sgs ",
+            'picture_tags': "r rr r rrrrrrrr rrrr",
+            'picture_category': 1}
+
+        picture_file = open(picture_file, 'rb')
+        picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
+        files = {'picture': picture_file}
+
+        form = AddPictureForm(data=data, files=files)
+        self.assertFalse(form.is_valid(), form.errors)
+        picture_file.close()
+
+    # No picture file = > musisz wybrać zdjęcie
+    def test_PictureUploadFormNotvalid2(self):
+        picture_file = settings.MEDIA_ROOT + 'avatar_test_029.jpg'
+        data = {
+            'title': "test title for picture upload test",
+            'description': "123 d fsdfds gs g ggs g sgs ",
+            'picture_tags': "r rr r rrrrrrrr rrrr",
+            'picture_category': 1}
+
+        picture_file = open(picture_file, 'rb')
+        picture_file = SimpleUploadedFile('avatar_test_029.jpg', picture_file.read())
+        files = {'picture': None}
+
+        form = AddPictureForm(data=data, files=files)
+        self.assertFalse(form.is_valid(), form.errors)
+        picture_file.close()
+
+    # ---- test of the class AddPicture:
+    # EXIF for test picture
+    # Camera Manufacturer	NIKON CORPORATION
+    # Camera Model	NIKON D300
+    # Exposure time [s]	1/5
+    # F-Number	6.3
+    # Exposure program	Manual (1)
+    # ISO speed ratings	200
+    # Date taken	16/12/2011 - 14:31:08 CET
+    # Shutter speed [s]	1/5
+    # Aperture	F6.3
+    # Focal length [mm]	98
 
     def test_AddPicture_View(self):
-        picture_file = settings.MEDIA_ROOT + "tests/test_image_exif.jpg"
+        picture_file = settings.MEDIA_ROOT + "tests/testimageexif.jpg"
         data = {
-            'title': "This is the total test for the AddPicture View",
+            'title': "Piękny widok na Bangkok",
             'description': "description for AddPicture View test. description for AddPicture View test. description "
                            "for AddPicture View test. description for AddPicture View test. description for "
                            "AddPicture View test. description for AddPicture View test. description for AddPicture "
@@ -138,16 +152,34 @@ class PictureUpload(TestCase):
             'picture_tags': "test, view, Picture, upload, add, ",
             'picture_category': 1}
         picture_file = open(picture_file, 'rb')
-        picture_file = SimpleUploadedFile('test_image_exif.jpg', picture_file.read(), content_type="image/jpeg")
-        picture_file.read()
+        picture_file = SimpleUploadedFile('testimageexif.jpg', picture_file.read(), content_type="image/jpeg")
         files = {'picture': picture_file}
 
         form = AddPictureForm(data=data, files=files)
-        self.assertFalse(form.is_valid(), form.errors)
+        self.assertTrue(form.is_valid())
 
         response = self.user_client.post("/dodaj-zdjecie", data=data, files=files)
         self.assertEqual(response.status_code, 200)
 
+        data['picture'] = picture_file
+        request = self.factory.post("/dodaj-zdjecie", data=data)
+        request.user = self.user
+        response = AddPicture.as_view()(request)
+        # print(response.content)
 
+        tested_picture = Picture.objects.get(id=1)
+        self.assertEqual(tested_picture.title, "Piękny widok na Bangkok")
+        self.assertEqual(tested_picture.picture_category_id_id, 1)
+        self.assertEqual(tested_picture.picture, "moda-piekny-widok-na-bangkok.jpg")
+        self.assertEqual(tested_picture.picture_thumbnail, "moda-piekny-widok-na-bangkok_thumb.jpg")
+        self.assertEqual(tested_picture.ISO, 200)
+        self.assertEqual(tested_picture.shutter_speed, "1/5")
+        self.assertEqual(tested_picture.f_stop, 6.3)
+        self.assertEqual(tested_picture.focal_length, 98)
+        self.assertEqual(tested_picture.camera_make, "nikon corporation")
+        self.assertEqual(tested_picture.camera_model, "nikon d300")
+        self.assertEqual(tested_picture.lens, "n/a")
+
+        picture_file.close()
 
     # run tests => python3 manage.py test

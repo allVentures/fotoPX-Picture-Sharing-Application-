@@ -63,18 +63,18 @@ class LoginForm(forms.Form):
 
 
 class AddPictureForm(forms.Form):
-    # CAT = []
-    # categories = PictureCategory.objects.all()
-    # for cat in categories:
-    #     CAT.append((cat.id,cat.category))
-    #     CATEGORIES = tuple(CAT)
+    CAT = []
+    categories = PictureCategory.objects.all()
+    for cat in categories:
+        CAT.append((cat.id,cat.category))
+        CATEGORIES = tuple(CAT)
 
 #this tuple is here just for testing purposes; otherwise use the dynamically generated tuple above
-    CATEGORIES = (
-    (1, "Moda"),
-    (2, "Krajobraz"),
-    (3, "Portret"),
-    )
+    # CATEGORIES = (
+    # (1, "Moda"),
+    # (2, "Krajobraz"),
+    # (3, "Portret"),
+    # )
 
 
     picture = forms.ImageField(label="picture", max_length=160, required=True, error_messages={
