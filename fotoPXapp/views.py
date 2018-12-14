@@ -17,7 +17,7 @@ from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, Pict
     PictureComment, Followers, Tags
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData
 from PIL import Image
-from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm
+from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm, AddComment
 
 
 # ------------MAIN PAGE, HEADER , FOOTER-----------------------
@@ -324,6 +324,19 @@ class AllPictures(View):
 
 class PictureView(View):
     def get(self, request, category_slug, picture_slug, id):
+        form = AddComment()
+        picture_comment = str(request.GET.get('picture_comment'))
+
+        if picture_comment != "None":
+            new_comment = PictureComment.objects.create(commenter_id=request.user.id, comment=picture_comment,
+                                                        picture_id_id=id)
+            response_data = {}
+            response_data["comment"] = new_comment.comment
+            response_data["commenter_name"] = request.user.first_name + " " + request.user.last_name
+            response_data["commenter_avatar"] = str(request.user.extenduser.avatar_picture)
+            response_data["commenter_slug"] = request.user.extenduser.slug
+            return HttpResponse(dumps(response_data), content_type="application/json")
+
         picture_to_display = Picture.objects.get(id=id)
         picture_owner_id = picture_to_display.picture_user_id_id
         picture_owner_info = ExtendUser.objects.get(user_id=picture_owner_id)
@@ -337,10 +350,11 @@ class PictureView(View):
         all_commenters = []
         for usr in picture_comments:
             commenter = ExtendUser.objects.get(user_id=usr.commenter)
-            all_commenters.append(commenter)
+            if commenter not in all_commenters:
+                all_commenters.append(commenter)
 
         ctx = {"picture": picture_to_display, "owner": picture_owner_info, "comments": picture_comments,
-               "commenters_array": all_commenters, "picture_rating": average_picture_rating}
+               "commenters_array": all_commenters, "picture_rating": average_picture_rating, "form": form}
         return render(request, "picture_view.html", ctx)
 
 
@@ -404,7 +418,7 @@ class AddPicture(LoginRequiredMixin, View):
             if Picture.objects.filter(pic_slug=new_pic_slug):
                 new_pic_slug = new_pic_slug + str(random.randint(1, 10000))
 
-            #--save EXIF--
+            # --save EXIF--
 
             exif_tags = GetExifData(im)
 
@@ -421,8 +435,8 @@ class AddPicture(LoginRequiredMixin, View):
                 shutter_speed=exif_tags["exposure_time"],
                 f_stop=exif_tags["f_stop"],
                 lens=exif_tags["lens"],
-                camera_model = exif_tags["camera_model"],
-                creation_date= exif_tags["date_taken"],
+                camera_model=exif_tags["camera_model"],
+                creation_date=exif_tags["date_taken"],
             )
 
             # ---- convert and add tags to picture -----

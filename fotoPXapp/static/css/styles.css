@@ -261,6 +261,32 @@ li.comments div {
     margin: 5px;
 }
 
+.addPictureComment {
+    width: 100%;
+}
+
+.addPictureCommentBox {
+    margin-bottom: 0;
+}
+
+.commentInput {
+    margin-bottom: 7px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    min-height: 50px;
+    overflow: hidden;
+}
+
+.buttonAddComment{
+    float: right;
+    margin-bottom: 4px;
+}
+
+.pictureComment {
+    width: 100%;
+}
+
 /*-----------------USER PAGE----------------------------*/
 .userInfoUserPage {
     width: 100%;
@@ -421,7 +447,7 @@ ul.errorlist {
     width: 100%;
 }
 
-.uploadPicBtn{
+.uploadPicBtn {
     margin-top: 10px;
 }
 

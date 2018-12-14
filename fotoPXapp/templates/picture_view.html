@@ -28,6 +28,22 @@
 <div class="row pictureComments">
     <div class="col-6">
         <ul class="list-unstyled">
+            {% if user.is_authenticated %}
+                <li class="media comments" id="pictureCommentLi">
+                    <a href="/{{ user.extenduser.slug }}">
+                        <img class="mr-3 commentAvatar" src="{{ user.extenduser.avatar_picture.url }}" alt="">
+                    </a>
+                    <div class="addPictureComment">
+                        <a href="/{{ user.extenduser.slug }}">{{ user.extenduser.name }}</a>
+
+                        <div class="form-group addPictureCommentBox">
+                            <label for="comment">moj komantarz:</label>
+                            {{ form.comment }}
+                            <button type="button" class="btn btn-primary buttonAddComment">dodaj</button>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
             {% for comment in comments %}
                 {% for commenter in commenters_array %}
                     {% if commenter.user_id == comment.commenter.id %}
@@ -35,7 +51,7 @@
                             <a href="/{{ commenter.slug }}">
                                 <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}" alt="">
                             </a>
-                            <div>
+                            <div class="pictureComment">
                                 <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
                                 <div class="media-body">
                                     {{ comment.comment }}

@@ -127,5 +127,55 @@ $(function () {
 
 // all picture display flex end
 
+// Picture comments input size
+    var $commentInput = $('.form-control.commentInput');
+    $commentInput.on('input', function (e) {
+        var scroll_height = $(this).get(0).scrollHeight;
+        if (scroll_height > 60) {
+            $(this).css('height', scroll_height + 'px');
+        }
+    });
+    $commentInput.on('keydown', function (e) {
+        if ((e.keyCode == 46) || (e.keyCode == 8)) {
+            var scroll_height = $(this).get(0).scrollHeight;
+            $(this).css('height', scroll_height - 200 + 'px');
+        }
+    });
+
+// Picture comments  - Add Comment
+    var $buttonComment = $('.buttonAddComment');
+    $buttonComment.on('click', function (e) {
+        var url = $(location).attr('href');
+        var $pictureComment = $('#id_comment').val();
+        $.ajax({
+            url: url,
+            data: {"picture_comment": $pictureComment},
+            type: "GET",
+            dataType: "json"
+        }).done(function (json) {
+            add_new_picture_comment(json);
+        }).fail(function (xhr, status, err) {
+        }).always(function (xhr, status) {
+        });
+    })
+
+    function add_new_picture_comment(comment) {
+        var $new_comment = `
+     <li class="media comments">
+        <a href="/${comment["commenter_slug"]}">
+            <img class="mr-3 commentAvatar" src="/media/${comment["commenter_avatar"]}" alt="">
+        </a>
+        <div class="pictureComment">
+            <a href="/${comment["commenter_slug"]}">${comment["commenter_name"]}</a>
+            <div class="media-body">
+            ${comment["comment"]}
+            </div>
+        </div>
+    </li>`;
+        $('#pictureCommentLi').after($new_comment);
+    }
+
+
 // --------------------JS END -------------------------
 });
+
