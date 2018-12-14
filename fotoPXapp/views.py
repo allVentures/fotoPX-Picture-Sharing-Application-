@@ -1,5 +1,4 @@
 import random
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Permission
@@ -15,7 +14,7 @@ from os import path, rename, remove
 from json import dumps
 from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
-from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData
+from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData, TextInputCleanup
 from PIL import Image
 from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm, AddComment
 
@@ -325,7 +324,9 @@ class AllPictures(View):
 class PictureView(View):
     def get(self, request, category_slug, picture_slug, id):
         form = AddComment()
+        picture_rating = request.GET.get('rating')
         picture_comment = str(request.GET.get('picture_comment'))
+        picture_comment = TextInputCleanup(picture_comment)
 
         if picture_comment != "None":
             new_comment = PictureComment.objects.create(commenter_id=request.user.id, comment=picture_comment,
@@ -337,10 +338,19 @@ class PictureView(View):
             response_data["commenter_slug"] = request.user.extenduser.slug
             return HttpResponse(dumps(response_data), content_type="application/json")
 
+        if picture_rating:
+            if PictureRating.objects.filter(rater_id=request.user.id, picture_id_id=id):
+                PictureRating.objects.filter(rater_id=request.user.id, picture_id_id=id).delete()
+            new_picture_rating = PictureRating.objects.create(rater_id=request.user.id, picture_id_id=id, rating=picture_rating)
+            # response_data = {}
+            # return HttpResponse(dumps(response_data), content_type="application/json")
+
+
         picture_to_display = Picture.objects.get(id=id)
         picture_owner_id = picture_to_display.picture_user_id_id
         picture_owner_info = ExtendUser.objects.get(user_id=picture_owner_id)
         picture_comments = PictureComment.objects.filter(picture_id_id=id)
+
         average_picture_rating = PictureRating.objects.filter(picture_id_id=id).aggregate(Avg('rating'))
         if average_picture_rating['rating__avg'] != None:
             average_picture_rating = round(average_picture_rating['rating__avg'], 2)

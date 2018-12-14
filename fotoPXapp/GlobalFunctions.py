@@ -20,6 +20,11 @@ def RemoveSpecialCharacters(text):
     return text
 
 
+def TextInputCleanup(text):
+    text = re.sub('[^A-Za-z0-9ąćęłńóśżź.,?!-%@*/+]+', ' ', text)
+    return text
+
+
 # function takes an opened pillow image and returns dictionary of main EXIF Tags
 # EXIF, see exif specification at http://www.exiv2.org/tags.html
 # and https://en.wikipedia.org/wiki/Exposure_value#EV_and_APEX

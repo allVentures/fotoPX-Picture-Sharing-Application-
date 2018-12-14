@@ -125,9 +125,7 @@ $(function () {
         img.src = src;
     });
 
-// all picture display flex end
-
-// Picture comments input size
+//--------------- Picture comments input size ---------------
     var $commentInput = $('.form-control.commentInput');
     $commentInput.on('input', function (e) {
         var scroll_height = $(this).get(0).scrollHeight;
@@ -142,7 +140,7 @@ $(function () {
         }
     });
 
-// Picture comments  - Add Comment
+// ---------------Picture comments  - Add Comment ---------------
     var $buttonComment = $('.buttonAddComment');
     $buttonComment.on('click', function (e) {
         var url = $(location).attr('href');
@@ -174,6 +172,26 @@ $(function () {
     </li>`;
         $('#pictureCommentLi').after($new_comment);
     }
+
+    //----------Picture rating---------------
+
+    $('.PictureRating input').change(function () {
+        var url = $(location).attr('href');
+        var $radio = $(this);
+        var $rating = $radio.val();
+        $('.PictureRating .selected').removeClass('selected');
+        $radio.closest('label').addClass('selected');
+         $.ajax({
+            url: url,
+            data: {"rating": $rating},
+            type: "GET",
+            dataType: "json"
+        }).done(function (json) {
+            console.log("rating changed");
+        }).fail(function (xhr, status, err) {
+        }).always(function (xhr, status) {
+        });
+    });
 
 
 // --------------------JS END -------------------------
