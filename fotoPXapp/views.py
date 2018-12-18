@@ -322,6 +322,15 @@ class AllPictures(View):
 
 
 class PictureView(View):
+    @classmethod
+    def average_picture_rating(cls, id):
+        average_picture_rating = PictureRating.objects.filter(picture_id_id=id).aggregate(Avg('rating'))
+        if average_picture_rating['rating__avg'] != None:
+            average_picture_rating = round(average_picture_rating['rating__avg'], 2)
+        else:
+            average_picture_rating = "n/a"
+        return average_picture_rating
+
     def get(self, request, category_slug, picture_slug, id):
         form = AddComment()
         picture_rating = request.GET.get('rating')
@@ -338,24 +347,30 @@ class PictureView(View):
             response_data["commenter_slug"] = request.user.extenduser.slug
             return HttpResponse(dumps(response_data), content_type="application/json")
 
+        # check if user rated the picture already.
+        if PictureRating.objects.filter(rater_id=request.user.id, picture_id_id=id):
+            user_pic_rating = PictureRating.objects.get(rater_id=request.user.id, picture_id_id=id).rating
+        else:
+            user_pic_rating = 0
+
+        # user rates picture or changes his/her rating (js, ajax)
         if picture_rating:
             if PictureRating.objects.filter(rater_id=request.user.id, picture_id_id=id):
                 PictureRating.objects.filter(rater_id=request.user.id, picture_id_id=id).delete()
-            new_picture_rating = PictureRating.objects.create(rater_id=request.user.id, picture_id_id=id, rating=picture_rating)
-            # response_data = {}
-            # return HttpResponse(dumps(response_data), content_type="application/json")
-
+            new_picture_rating = PictureRating.objects.create(rater_id=request.user.id, picture_id_id=id,
+                                                              rating=picture_rating)
+            average_picture_rating = PictureView.average_picture_rating(id)
+            response_data = {"pic_average_rating": average_picture_rating}
+            return HttpResponse(dumps(response_data), content_type="application/json")
 
         picture_to_display = Picture.objects.get(id=id)
+        picture_to_display.views += 1
+        picture_to_display.save()
         picture_owner_id = picture_to_display.picture_user_id_id
         picture_owner_info = ExtendUser.objects.get(user_id=picture_owner_id)
         picture_comments = PictureComment.objects.filter(picture_id_id=id)
 
-        average_picture_rating = PictureRating.objects.filter(picture_id_id=id).aggregate(Avg('rating'))
-        if average_picture_rating['rating__avg'] != None:
-            average_picture_rating = round(average_picture_rating['rating__avg'], 2)
-        else:
-            average_picture_rating = "n/a"
+        average_picture_rating = PictureView.average_picture_rating(id)
 
         all_commenters = []
         for usr in picture_comments:
@@ -364,7 +379,8 @@ class PictureView(View):
                 all_commenters.append(commenter)
 
         ctx = {"picture": picture_to_display, "owner": picture_owner_info, "comments": picture_comments,
-               "commenters_array": all_commenters, "picture_rating": average_picture_rating, "form": form}
+               "commenters_array": all_commenters, "picture_rating": average_picture_rating,
+               "user_pic_rating": user_pic_rating, "range": reversed(range(1, 6)), "form": form}
         return render(request, "picture_view.html", ctx)
 
 

@@ -64,24 +64,24 @@
         </ul>
     </div>
     <div class="pictureExif col-6">
-        <h4 class="pictureViewH4">Oceń zdjęcie</h4>
+        {% if user_pic_rating %}
+            <h4 class="pictureViewH4" id="your_rating">Twoja ocena:</h4>
+        {% else %}
+            <h4 class="pictureViewH4" id="your_rating">Oceń zdjęcie</h4>
+        {% endif %}
 
         <div class="PictureRating">
-            <label class="fas fa-star">
-                <input type="radio" name="rating" value="5" title="5 stars">
-            </label>
-            <label class="fas fa-star">
-                <input type="radio" name="rating" value="4" title="4 stars">
-            </label>
-            <label class="fas fa-star">
-                <input type="radio" name="rating" value="3" title="3 stars">
-            </label>
-            <label class="fas fa-star">
-                <input type="radio" name="rating" value="2" title="2 stars">
-            </label>
-            <label class="fas fa-star">
-                <input type="radio" name="rating" value="1" title="1 star">
-            </label>
+        {% for x in range %}
+            {% if x == user_pic_rating %}
+                <label class="fas fa-star selected">
+                    <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
+                </label>
+            {% else %}
+                <label class="fas fa-star">
+                    <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
+                </label>
+            {% endif %}
+        {% endfor %}
         </div>
 
         <h4 class="pictureViewH4">Statystyka:</h4>
@@ -89,7 +89,7 @@
             <tbody>
             <tr>
                 <th scope="row">średnia ocena:</th>
-                <td>{{ picture_rating }}</td>
+                <td id="pic_av_rating">{{ picture_rating }}</td>
             </tr>
             <tr>
                 <th scope="row">liczba odsłon:</th>

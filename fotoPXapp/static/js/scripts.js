@@ -171,6 +171,7 @@ $(function () {
         </div>
     </li>`;
         $('#pictureCommentLi').after($new_comment);
+        $('#pictureCommentLi textarea').val('');
     }
 
     //----------Picture rating---------------
@@ -187,7 +188,8 @@ $(function () {
             type: "GET",
             dataType: "json"
         }).done(function (json) {
-            console.log("rating changed");
+            $('#pic_av_rating').text(json.pic_average_rating);
+            $("#your_rating").text("Twoja ocena:");
         }).fail(function (xhr, status, err) {
         }).always(function (xhr, status) {
         });
