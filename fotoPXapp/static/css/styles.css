@@ -154,30 +154,36 @@ h6 {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     text-align: center;
     position: relative;
-    /*overflow: hidden;*/
+}
+
+.pictureView:hover .sliderLeft, .pictureView:hover .sliderRight{
+    opacity: 0.6;
+    transition: 0.3s;
 }
 
 .sliderLeft, .sliderRight {
     font-size: 100px;
     font-weight: 900;
     background-color: #4e555b;
-    opacity: 0.5;
+    opacity: 0;
     border-radius: 20px;
     padding: 0 5px;
     position: absolute;
 }
 
+
 .sliderLeft {
-    transform: translateX(580px);
+    left: 0;
+    margin-left: 5px;
 }
 
 .sliderRight {
-    transform: translateX(-580px);
+    right: 0;
+    margin-right: 5px;
 }
 
 .userInfoPictureView {
