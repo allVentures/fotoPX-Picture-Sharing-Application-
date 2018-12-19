@@ -2,12 +2,26 @@
 
 <h3 class="h3FotoPx">Kategoria: <a
         href="/kategoria/{{ picture.picture_category_id.category_slug }}/{{ picture.picture_category_id_id }}">{{ picture.picture_category_id }}</a>
+    {% if slider_context == "photographer" %}
+        <div class="sliderContext">
+            by: {{ picture.picture_user_id.first_name }} {{ picture.picture_user_id.last_name }}</div>
+    {% elif slider_context == "tag" %}
+        <div class="sliderContext">tag: {{ selected_tag }}</div>
+    {% endif %}
 </h3>
 
 <div class="pictureView">
-    <div class="sliderLeft">&lt</div>
+    {% if previous_picture != None %}
+        <a href="/{{ previous_picture }}">
+            <div class="sliderLeft">&lt</div>
+        </a>
+    {% endif %}
     <img class="img-fluid" src="{{ picture.picture.url }}" alt="">
-    <div class="sliderRight">&gt</div>
+    {% if next_picture != None %}
+        <a href="/{{ next_picture }}">
+            <div class="sliderRight">&gt</div>
+        </a>
+    {% endif %}
 </div>
 <div class="row userInfoPictureView">
     <div class="pictureTitle col-8">
@@ -71,17 +85,17 @@
         {% endif %}
 
         <div class="PictureRating">
-        {% for x in range %}
-            {% if x == user_pic_rating %}
-                <label class="fas fa-star selected">
-                    <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
-                </label>
-            {% else %}
-                <label class="fas fa-star">
-                    <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
-                </label>
-            {% endif %}
-        {% endfor %}
+            {% for x in range %}
+                {% if x == user_pic_rating %}
+                    <label class="fas fa-star selected">
+                        <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
+                    </label>
+                {% else %}
+                    <label class="fas fa-star">
+                        <input type="radio" name="rating" value="{{ x }}" title="{{ x }} stars">
+                    </label>
+                {% endif %}
+            {% endfor %}
         </div>
 
         <h4 class="pictureViewH4">Statystyka:</h4>

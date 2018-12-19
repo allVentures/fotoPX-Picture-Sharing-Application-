@@ -22,6 +22,8 @@ def RemoveSpecialCharacters(text):
 
 def TextInputCleanup(text):
     text = re.sub('[^A-Za-z0-9ąćęłńóśżź.,?!-%@*/+]+', ' ', text)
+    text = text.replace("'","")
+    text = text.replace('"',"")
     return text
 
 

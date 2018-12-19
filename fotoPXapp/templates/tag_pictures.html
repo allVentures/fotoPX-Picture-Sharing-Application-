@@ -3,7 +3,7 @@
 </h3>
 <div class="grid">
     {% for img in pictures %}
-        <a href="/{{ img.picture_id.picture_category_id.category_slug }}/{{ img.picture_id.pic_slug }}/{{ img.picture_id.id }}">
+        <a href="/{{ img.picture_id.picture_category_id.category_slug }}/{{ img.picture_id.pic_slug }}/{{ img.picture_id.id }}?tag_id={{ tag.id }}">
             <img class="pictureThumbnail"
                  data-height={{ img.picture_id.th_height }} data-width={{ img.picture_id.th_width }}
                  src="{{ img.picture_id.picture.url }}">

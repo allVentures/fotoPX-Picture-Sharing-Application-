@@ -7,12 +7,13 @@ import re
 # import unicodedata
 from unicodedata import normalize
 
+from django.core.exceptions import ObjectDoesNotExist
 from idna import unicode
 
 from fotoPX import settings
+from fotoPXapp import models
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters
-from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
-    PictureRating, PictureTags, Regions, Followers, Tags
+from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, PictureRating, PictureTags, Regions, Followers, Tags
 from faker import Faker, Factory
 from faker.providers import date_time, lorem, person, phone_number
 import random
@@ -52,7 +53,6 @@ from PIL import Image
 
 # --------------------------------FAKER-------------------------------------------
 fake = Faker('pl_PL')
-
 
 # email = fake.email()
 # first_name = fake.first_name()
@@ -449,8 +449,19 @@ fake = Faker('pl_PL')
 # full_path_to_file = "long_exposure.JPG"
 # getExifData(full_path_to_file)
 
+pics = PictureComment.objects.all()
+for p in pics:
+    try:
+        ExtendUser.objects.get(user_id=p.commenter_id)
+    except ObjectDoesNotExist:
+        print(p.commenter_id)
+    except Exception:
+        print("xxxxxxxx")
+
+# pics = PictureComment.objects.filter(commenter_id=146)
+# pics.delete()
 
 
-# -----------------------------------------------------------------------------------------------------------------------
-# odpalamy w konsoli
-# python3 ../manage.py shell < working_scripts.py
+    # -----------------------------------------------------------------------------------------------------------------------
+    # odpalamy w konsoli
+    # python3 ../manage.py shell < working_scripts.py

@@ -1,4 +1,5 @@
 import random
+import re
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, Permission
@@ -334,9 +335,104 @@ class PictureView(View):
     def get(self, request, category_slug, picture_slug, id):
         form = AddComment()
         picture_rating = request.GET.get('rating')
-        picture_comment = str(request.GET.get('picture_comment'))
-        picture_comment = TextInputCleanup(picture_comment)
+        get_picture_comment = str(request.GET.get('picture_comment'))
+        picture_comment = TextInputCleanup(get_picture_comment)
+        previous_url = self.request.META.get('HTTP_REFERER')
+        photograph_id = request.GET.get('photographer_id')
+        cat_id = request.GET.get('category_id')
+        tag_id = request.GET.get('tag_id')
 
+        # ---picture slider links---
+        next_picture_link = None
+        previous_picture_link = None
+        slider_context = ""
+        selected_tag = ""
+        if previous_url != None:
+            if re.search(r'/fotograf/+', previous_url) or photograph_id:
+                current_picture_author_id = Picture.objects.get(id=id).picture_user_id_id
+                all_user_pictures = Picture.objects.filter(picture_user_id=current_picture_author_id)
+                index = 0
+                for pic in all_user_pictures:
+                    index += 1
+                    if int(pic.id) == int(id):
+                        current_picture_index = index
+                index = 0
+                next_picture_link = None
+                previous_picture_link = None
+                slider_context = "photographer"
+                for pic in all_user_pictures:
+                    index += 1
+                    if index == (current_picture_index - 1):
+                        previous_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                            pic.id) + "?photographer_id=" + str(current_picture_author_id)
+                    if index == (current_picture_index + 1):
+                        next_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                            pic.id) + "?photographer_id=" + str(current_picture_author_id)
+
+            if re.search(r'/kategoria/+', previous_url) or cat_id:
+                current_category_id = Picture.objects.get(id=id).picture_category_id_id
+                all_category_pictures = Picture.objects.filter(picture_category_id=current_category_id)
+                index = 0
+                for pic in all_category_pictures:
+                    index += 1
+                    if int(pic.id) == int(id):
+                        current_picture_index = index
+                index = 0
+                next_picture_link = None
+                previous_picture_link = None
+                slider_context = "category"
+                for pic in all_category_pictures:
+                    index += 1
+                    if index == (current_picture_index - 1):
+                        previous_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                            pic.id) + "?category_id=" + str(current_category_id)
+                    if index == (current_picture_index + 1):
+                        next_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                            pic.id) + "?category_id=" + str(current_category_id)
+
+            if re.search(r'/zdjecia/tag/+', previous_url) or tag_id:
+                all_tagged_pictures = PictureTags.objects.filter(picture_tag_id=tag_id)
+                slider_context = "tag"
+                selected_tag = Tags.objects.get(id=tag_id).tag
+                index = 0
+                for pictag in all_tagged_pictures:
+                    index += 1
+                    if int(pictag.picture_id_id) == int(id):
+                        current_picture_index = index
+                index = 0
+                next_picture_link = None
+                previous_picture_link = None
+
+                for pictag in all_tagged_pictures:
+                    index += 1
+                    if index == (current_picture_index - 1):
+                        previous_picture_link = pictag.picture_id.picture_category_id.category_slug + "/" + pictag.picture_id.pic_slug + "/" + str(
+                            pictag.picture_id.id) + "?tag_id=" + str(tag_id)
+                    if index == (current_picture_index + 1):
+                        next_picture_link = pictag.picture_id.picture_category_id.category_slug + "/" + pictag.picture_id.pic_slug + "/" + str(
+                            pictag.picture_id.id) + "?tag_id=" + str(tag_id)
+
+        else:
+            # for all other get connections - standard picture category slider
+            current_category_id = Picture.objects.get(id=id).picture_category_id_id
+            all_category_pictures = Picture.objects.filter(picture_category_id=current_category_id)
+            index = 0
+            for pic in all_category_pictures:
+                index += 1
+                if int(pic.id) == int(id):
+                    current_picture_index = index
+            index = 0
+            next_picture_link = None
+            previous_picture_link = None
+            for pic in all_category_pictures:
+                index += 1
+                if index == (current_picture_index - 1):
+                    previous_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                        pic.id) + "?category_id=" + str(current_category_id)
+                if index == (current_picture_index + 1):
+                    next_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
+                        pic.id) + "?category_id=" + str(current_category_id)
+        # ---add picture comment---
         if picture_comment != "None":
             new_comment = PictureComment.objects.create(commenter_id=request.user.id, comment=picture_comment,
                                                         picture_id_id=id)
@@ -380,7 +476,10 @@ class PictureView(View):
 
         ctx = {"picture": picture_to_display, "owner": picture_owner_info, "comments": picture_comments,
                "commenters_array": all_commenters, "picture_rating": average_picture_rating,
-               "user_pic_rating": user_pic_rating, "range": reversed(range(1, 6)), "form": form}
+               "user_pic_rating": user_pic_rating, "range": reversed(range(1, 6)), "next_picture": next_picture_link,
+               "previous_picture": previous_picture_link, "slider_context": slider_context, "form": form}
+        if selected_tag:
+            ctx["selected_tag"] = selected_tag
         return render(request, "picture_view.html", ctx)
 
 

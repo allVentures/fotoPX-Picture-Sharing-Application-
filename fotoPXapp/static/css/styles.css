@@ -173,6 +173,7 @@ h6 {
     border-radius: 20px;
     padding: 0 5px;
     position: absolute;
+    color: lightgoldenrodyellow;
 }
 
 
@@ -184,6 +185,11 @@ h6 {
 .sliderRight {
     right: 0;
     margin-right: 5px;
+}
+
+.sliderContext {
+    float: right;
+    color: lightgoldenrodyellow;
 }
 
 .userInfoPictureView {
