@@ -302,6 +302,14 @@ class user_page(View):
         return render(request, "user_page.html", ctx)
 
 
+# -----------------------all users ----------------------------
+class AllUsers(View):
+    def get(self, request):
+        all_users = User.objects.all().order_by('-last_login')
+        ctx = {"all_users": all_users}
+        return render(request, "all_users.html", ctx)
+
+
 # -----------------------------PICTURES-----------------------------
 # ----------All pictures & all pictures in categories--------
 

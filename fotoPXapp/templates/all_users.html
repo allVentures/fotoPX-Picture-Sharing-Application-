@@ -1,0 +1,12 @@
+{% include  "header.html" %}
+<h3 class="h3FotoPx">użytkownicy
+</h3>
+
+<div class="grid">
+    {% for usr in all_users %}
+        <a href="/{{ usr.extenduser.slug }}">
+            <img class="pictureThumbnail" data-height=250 data-width=250 src="{{ usr.extenduser.avatar_picture.url }}">
+        </a>
+    {% endfor %}
+</div>
+{% include "footer.html" %}

@@ -449,18 +449,25 @@ fake = Faker('pl_PL')
 # full_path_to_file = "long_exposure.JPG"
 # getExifData(full_path_to_file)
 
-pics = PictureComment.objects.all()
-for p in pics:
-    try:
-        ExtendUser.objects.get(user_id=p.commenter_id)
-    except ObjectDoesNotExist:
-        print(p.commenter_id)
-    except Exception:
-        print("xxxxxxxx")
+# pics = PictureComment.objects.all()
+# for p in pics:
+#     try:
+#         ExtendUser.objects.get(user_id=p.commenter_id)
+#     except ObjectDoesNotExist:
+#         print(p.commenter_id)
+#     except Exception:
+#         print("xxxxxxxx")
 
 # pics = PictureComment.objects.filter(commenter_id=146)
 # pics.delete()
 
+# add last login date
+# users = User.objects.all().order_by('id')[82:99]
+# day = 9
+# for u in users:
+#     day +=1
+#     u.last_login = "2018-08-"+str(day)+ " 19:10"
+#     u.save()
 
     # -----------------------------------------------------------------------------------------------------------------------
     # odpalamy w konsoli
