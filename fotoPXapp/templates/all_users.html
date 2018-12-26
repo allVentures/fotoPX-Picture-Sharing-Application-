@@ -2,10 +2,11 @@
 <h3 class="h3FotoPx">użytkownicy
 </h3>
 
-<div class="grid">
+<div class="gridAvatar">
     {% for usr in all_users %}
         <a href="/{{ usr.extenduser.slug }}">
-            <img class="pictureThumbnail" data-height=250 data-width=250 src="{{ usr.extenduser.avatar_picture.url }}">
+            <img class="avatarThumbnail" data-height=400 data-width=400 src="{{ usr.extenduser.avatar_picture.url }}">
+            <div class="allUsersAvatarInfo">{{ usr.first_name }} {{ usr.last_name }}</div>
         </a>
     {% endfor %}
 </div>

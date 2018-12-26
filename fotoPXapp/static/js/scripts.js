@@ -92,10 +92,8 @@ $(function () {
         var w = parseInt($(this).attr("data-width"));
         var h = parseInt($(this).attr("data-height"));
 
-        var flexBasis = (w * 140) / h;
-        var flexGrow = (w * 100) / h;
-        var paddingBottom = (h / w) * 100;
-
+        var flexBasis = (w *220) / h;
+        var flexGrow = 1
 
         var src = $(this).attr('src');
 
@@ -104,7 +102,6 @@ $(function () {
         });
 
         $(this).parent('a').wrap('<figure>')
-        // $(this).before('<i>');
 
         var figure = $(this).parent().parent();
         figure.css({
@@ -113,10 +110,37 @@ $(function () {
             'background-image': 'url(' + src + ')'
         });
 
-        // figure.find('i').css({
-        //     'padding-bottom': paddingBottom + '%'
-        // });
+        var img = new Image();
+        img.onload = function () {
+            figure.addClass('loaded');
+        }
+        img.src = src;
+    });
 
+    // ------------USERS AVATAR GRID---------------
+    var $pictures = $(".avatarThumbnail");
+    $pictures.each(function (i) {
+
+        var w = parseInt($(this).attr("data-width"));
+        var h = parseInt($(this).attr("data-height"));
+
+        var flexBasis = 255
+        var flexGrow = 1
+
+        var src = $(this).attr('src');
+
+        $(this).css({
+            'opacity': 0
+        });
+
+        $(this).parent('a').wrap('<figure>')
+
+        var figure = $(this).parent().parent();
+        figure.css({
+            'flex-grow': flexGrow,
+            'flex-basis': flexBasis + 'px',
+            'background-image': 'url(' + src + ')'
+        });
 
         var img = new Image();
         img.onload = function () {
@@ -124,6 +148,7 @@ $(function () {
         }
         img.src = src;
     });
+
 
 //--------------- Picture comments input size ---------------
     var $commentInput = $('.form-control.commentInput');
