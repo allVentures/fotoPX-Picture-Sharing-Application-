@@ -16,6 +16,7 @@
     <li>login</li>
     <li>User Registration</li>
     <li>Picture Upload</li>
+    <li>All Users view + soring options</li>
     <li>admin panel</li>
 </ul>
 <hr>
