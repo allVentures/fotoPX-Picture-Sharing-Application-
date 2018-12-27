@@ -11,7 +11,7 @@ from fotoPX import settings
 from fotoPXapp.models import User, ExtendUser, Picture, PictureTags, PictureCategory, PictureRating, PictureComment, \
     PRIVACY, PICTURE_RATING, Tags
 from fotoPXapp.forms import RegisterForm, LoginForm, AddPictureForm
-from fotoPXapp.views import AddPicture
+from fotoPXapp.views import AddPicture, AllUsers, PictureView, user_page
 
 
 # access to upload picture page only to logged users
@@ -182,4 +182,35 @@ class PictureUpload(TestCase):
 
         picture_file.close()
 
+# ------- test copy of procuction database -------------
+
+class AccessToPages(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.get(id=1)
+
+    def test_user_pages_access(self):
+        all_users = ExtendUser.objects.all()
+        for usr in all_users:
+            request = self.factory.get("/"+usr.slug)
+            request.user = self.user
+            response = user_page.as_view()(request, voivodeship = "xxx", name=usr.slug, id=usr.user_id)
+            print(usr.user_id, usr.slug, "=> response code:", response.status_code)
+            self.assertEqual(response.status_code, 200)
+
+    def test_picture_view_pages_access(self):
+        all_pics = Picture.objects.all()
+        for pic in all_pics:
+            request = self.factory.get(
+                "/" + pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(pic.id))
+            request.user = self.user
+            response = PictureView.as_view()(request, category_slug=pic.picture_category_id.category_slug,
+                                             picture_slug=pic.pic_slug, id=pic.id)
+            print(pic.id, "=> response code:", response.status_code)
+            self.assertEqual(response.status_code, 200)
+
     # run tests => python3 manage.py test
+
+    # pg_dump -U postgres -W -h localhost fotopx  > fotopx.sql
+    # psql -U postgres -W -f fotopx.sql -h localhost fotopxtest
+    # python3 manage.py test - -keepdb
