@@ -13,6 +13,9 @@ from django.views import View
 from django.conf import settings
 from os import path, rename, remove
 from json import dumps
+
+from numpy import sort
+
 from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData, TextInputCleanup
@@ -302,11 +305,132 @@ class user_page(View):
         return render(request, "user_page.html", ctx)
 
 
-# -----------------------all users ----------------------------
+# -----------------------all users view----------------------------
 class AllUsers(View):
     def get(self, request):
+        sort_order = [
+            ["online", "ostatnio online", 1],
+            ["joined", "dołączył", 0],
+            ["rating", "ocena", 0],
+            ["views", "ilość odsłon", 0],
+            ["numpictures", "ilość zdjęć", 0]
+        ]
+
+        sort_sequence = [
+            ["dsc", "malejąco", 1],
+            ["asc", "rosnąco", 0]
+        ]
         all_users = User.objects.all().order_by('-last_login')
-        ctx = {"all_users": all_users}
+
+        ctx = {"all_users": all_users, "sort_order": sort_order, "sort_sequence": sort_sequence}
+        return render(request, "all_users.html", ctx)
+
+    def post(self, request):
+        sorting = request.POST.get('sorting')
+        order = request.POST.get('order')
+        sort_order = [
+            ["online", "ostatnio online", 0],
+            ["joined", "dołączył", 0],
+            ["rating", "ocena", 0],
+            ["views", "ilość odsłon", 0],
+            ["numpictures", "ilość zdjęć", 0]
+        ]
+
+        sort_sequence = [
+            ["dsc", "malejąco", 0],
+            ["asc", "rosnąco", 0]
+        ]
+        all_users_array = []
+        array_key = ""
+
+        print(sorting)
+
+        if sorting == "online" and order == "dsc":
+            all_users = User.objects.all().order_by('-last_login')
+            sort_order[0][2] = 1
+            sort_sequence[0][2] = 1
+        elif sorting == "online" and order == "asc":
+            all_users = User.objects.all().order_by('last_login')
+            sort_order[0][2] = 1
+            sort_sequence[1][2] = 1
+        elif sorting == "joined" and order == "dsc":
+            all_users = User.objects.all().order_by('-date_joined')
+            sort_order[1][2] = 1
+            sort_sequence[0][2] = 1
+        elif sorting == "joined" and order == "asc":
+            all_users = User.objects.all().order_by('date_joined')
+            sort_order[1][2] = 1
+            sort_sequence[1][2] = 1
+
+        elif sorting == "rating":
+            all_users = User.objects.all()
+            for usr in all_users:
+                ratings_sum = 0
+                ratings_num = 0
+                user_pictures = Picture.objects.filter(picture_user_id_id=usr.id)
+                for pic in user_pictures:
+                    ratings = pic.picturerating_set.all()
+                    for rat in ratings:
+                        ratings_sum = ratings_sum + rat.rating
+                        ratings_num += 1
+                if ratings_num == 0:
+                    picture_rating_average = 0
+                else:
+                    picture_rating_average = ratings_sum / ratings_num
+                    picture_rating_average = round(picture_rating_average, 1)
+                all_users_array.append([usr, picture_rating_average])
+                array_key = "śr. ocena:"
+            if order == "dsc":
+                all_users_array.sort(key=lambda x: x[1], reverse=True)
+                sort_order[2][2] = 1
+                sort_sequence[0][2] = 1
+                sort_sequence[1][2] = 0
+            elif order == "asc":
+                all_users_array.sort(key=lambda x: x[1])
+                sort_order[2][2] = 1
+                sort_sequence[0][2] = 0
+                sort_sequence[1][2] = 1
+
+        elif sorting == "views":
+            all_users = User.objects.all()
+            for usr in all_users:
+                views = 0
+                user_pictures = Picture.objects.filter(picture_user_id_id=usr.id)
+                for pic in user_pictures:
+                    views = views + pic.views
+                all_users_array.append([usr, views])
+            array_key = "ilość odsłon:"
+            if order == "dsc":
+                all_users_array.sort(key=lambda x: x[1], reverse=True)
+                sort_order[3][2] = 1
+                sort_sequence[0][2] = 1
+                sort_sequence[1][2] = 0
+            elif order == "asc":
+                all_users_array.sort(key=lambda x: x[1])
+                sort_order[3][2] = 1
+                sort_sequence[0][2] = 0
+                sort_sequence[1][2] = 1
+
+        elif sorting == "numpictures":
+            all_users = User.objects.all()
+            for usr in all_users:
+                picture_count = Picture.objects.filter(picture_user_id_id=usr.id).count()
+                all_users_array.append([usr, picture_count])
+            array_key = "ilość zdjęć:"
+            if order == "dsc":
+                all_users_array.sort(key=lambda x: x[1], reverse=True)
+                sort_order[4][2] = 1
+                sort_sequence[0][2] = 1
+                sort_sequence[1][2] = 0
+            elif order == "asc":
+                all_users_array.sort(key=lambda x: x[1])
+                sort_order[4][2] = 1
+                sort_sequence[0][2] = 0
+                sort_sequence[1][2] = 1
+
+        ctx = {"all_users": all_users, "all_users_array": all_users_array, "array_key": array_key,
+               "sort_order": sort_order,
+               "sort_sequence": sort_sequence}
         return render(request, "all_users.html", ctx)
 
 

@@ -312,18 +312,21 @@ fake = Faker('pl_PL')
 #     woj_lower = woj.city.lower()
 #     stri = woj_lower
 #     slug = "fotograf/" + stri + "/" + us.user.first_name + "-" + us.user.last_name + "/" + str(us.user.id)
-#     # remove polish characters:
-#     polishChars = ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź']
-#     replaceChar = ['a', 'c', 'e', 'l', 'n', 'o', 's', 'z', 'z']
-#     arr_len = 9
-#     i = 0
-#     while i < 9:
-#         slug = slug.replace(polishChars[i], replaceChar[i])
-#         i = i + 1
-#     # slug = "fotograf/" + stri + "/" + us.user.first_name + "-"+us.user.last_name + "/" + str(us.id)
-#     # print(slug)
-#     us.slug = slug
-#     us.save()
+#     slug = slug.lower()
+#     slug = ReplacePolishCharacters(slug)
+
+    # remove polish characters:
+    # polishChars = ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ż', 'ź']
+    # replaceChar = ['a', 'c', 'e', 'l', 'n', 'o', 's', 'z', 'z']
+    # arr_len = 9
+    # i = 0
+    # while i < 9:
+    #     slug = slug.replace(polishChars[i], replaceChar[i])
+    #     i = i + 1
+    # slug = "fotograf/" + stri + "/" + us.user.first_name + "-"+us.user.last_name + "/" + str(us.id)
+    # print(slug)
+    # us.slug = slug
+    # us.save()
 
 # print(ReplacePolishCharacters("dolnośląskie"))
 
@@ -468,6 +471,8 @@ fake = Faker('pl_PL')
 #     day +=1
 #     u.last_login = "2018-08-"+str(day)+ " 19:10"
 #     u.save()
+
+
 
     # -----------------------------------------------------------------------------------------------------------------------
     # odpalamy w konsoli

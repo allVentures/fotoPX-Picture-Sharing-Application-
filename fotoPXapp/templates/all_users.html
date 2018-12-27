@@ -1,13 +1,66 @@
 {% include  "header.html" %}
 <h3 class="h3FotoPx">użytkownicy
 </h3>
+<form action="/uzytkownicy" method="post" id="allUsers" novalidate>
+    <div class="userSorting">
+        {% csrf_token %}
+        <div class="userSortingLeft">
+            {% for srt in sort_order %}
+                {% if srt.2 == 1 %}
+                    <label class="btnSorting btnSortingSelected">{{ srt.1 }}
+                        <input type="radio" name="sorting" class="sorting" value="{{ srt.0 }}" checked="checked">
+                    </label>
+                {% else %}
+                    <label class="btnSorting">{{ srt.1 }}
+                        <input type="radio" name="sorting" class="sorting" value="{{ srt.0 }}">
+                    </label>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="userSortingRight">
+            {% for ord in sort_sequence %}
+                {% if ord.2 == 1 %}
+                    <label class="btnSorting btnSortingSelected">{{ ord.1 }}
+                        <input type="radio" name="order" class="order" value="{{ ord.0 }}" checked="checked">
+                    </label>
+                {% else %}
+                    <label class="btnSorting">{{ ord.1 }}
+                        <input type="radio" name="order" class="order" value="{{ ord.0 }}">
+                    </label>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</form>
 
-<div class="gridAvatar">
-    {% for usr in all_users %}
-        <a href="/{{ usr.extenduser.slug }}">
-            <img class="avatarThumbnail" data-height=400 data-width=400 src="{{ usr.extenduser.avatar_picture.url }}">
-            <div class="allUsersAvatarInfo">{{ usr.first_name }} {{ usr.last_name }}</div>
-        </a>
-    {% endfor %}
-</div>
+{% if all_users_array %}
+    <div class="gridAvatar">
+        {% for u in all_users_array %}
+            <a href="/{{ u.0.extenduser.slug }}">
+                <img class="avatarThumbnail" data-height=280 data-width=280
+                     src="{{ u.0.extenduser.avatar_picture.url }}">
+                <div class="allUsersAvatarInfo2">
+                    {{ array_key }} {{ u.1 }}
+                </div>
+                <div class="allUsersAvatarInfo">{{ u.0.first_name }} {{ u.0.last_name }}</div>
+            </a>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <div class="gridAvatar">
+        {% for usr in all_users %}
+            <a href="/{{ usr.extenduser.slug }}">
+                <img class="avatarThumbnail" data-height=280 data-width=280
+                     src="{{ usr.extenduser.avatar_picture.url }}">
+                <div class="allUsersAvatarInfo2">
+                    ostatnio online: {{ usr.last_login | date:"Y-m-d" }} <br>
+                    dołączył: {{ usr.date_joined | date:"Y-m-d"  }}
+                </div>
+                <div class="allUsersAvatarInfo">{{ usr.first_name }} {{ usr.last_name }}</div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
 {% include "footer.html" %}

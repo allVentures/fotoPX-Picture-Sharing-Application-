@@ -8,7 +8,23 @@ from jet.admin import CompactInline
 # some CSS classsed for the (Jets) admin panel have been rewwritten:
 # /home/paul/.local/lib/python3.6/site-packages/jet/static/jet/css/themes/default/base.css
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'last_login')
+    ordering = ['id']
+    list_filter = ('id', 'username', 'first_name', 'last_name')
 
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+
+class UserAdminExtended(admin.ModelAdmin):
+    list_display = ('user_id', 'user', 'name', 'city', 'joined')
+    ordering = ['user_id']
+    list_filter = ('user_id', 'user', 'skype', 'facebook_id')
+    # search_fields = ('user', 'skype')
+
+
+admin.site.register(ExtendUser, UserAdminExtended)
 
 class PicturesAdmin(admin.ModelAdmin):
     pass
@@ -22,16 +38,6 @@ class PicturesAdmin(admin.ModelAdmin):
 admin.site.register(Picture, PicturesAdmin)
 
 
-class UserAdminExtended(admin.ModelAdmin):
-    list_display = ('user_id', 'user', 'name', 'city', 'joined')
-    ordering = ['user_id']
-    list_filter = ('user', 'skype', 'facebook_id')
-    # search_fields = ('user', 'skype')
-
-
-admin.site.register(ExtendUser, UserAdminExtended)
-
-
 class PictureRatingAdmin(admin.ModelAdmin):
     pass
 
@@ -40,8 +46,9 @@ admin.site.register(PictureRating, PictureRatingAdmin)
 
 
 class PictureCommentAdmin(admin.ModelAdmin):
-    list_display = ('picture_title', 'picture_ids', 'commenter_name',)
-    list_filter = ('picture_id', 'commenter')
+    list_display = ('picture_id_id', 'commenter', 'commenter_id', 'comment_date')
+    list_filter = ('picture_id', 'commenter_id')
+    ordering = ['picture_id_id']
 
 
 admin.site.register(PictureComment, PictureCommentAdmin)

@@ -25,5 +25,7 @@
 <img src="http://allphotolondon.com/working_files/fotoPX_picture_view.jpg" alt="">
 <h4>User Page View</h4>
 <img src="http://allphotolondon.com/working_files/fotoPX_user_page.jpg" alt="">
+<h4>All Users Page View</h4>
+<img src="http://allphotolondon.com/working_files/fotoPX_all_users_view.jpg" alt="">
 <h4>User Registration</h4>
 <img src="http://allphotolondon.com/working_files/fotoPX_registration.jpg" alt="">
