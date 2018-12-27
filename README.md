@@ -22,7 +22,7 @@
 <h4> Picture Gallery View</h4>
 <img src="http://allphotolondon.com/working_files/fotoPX_category_view.jpg" alt="">
 <h4>Picture View</h4>
-<img src="http://allphotolondon.com/working_files/fotoPX_picture_view.jpg" alt="">
+<img src="http://www.allphotolondon.com/working_files/fotoPX_picture_view.jpg" alt="">
 <h4>User Page View</h4>
 <img src="http://allphotolondon.com/working_files/fotoPX_user_page.jpg" alt="">
 <h4>All Users Page View</h4>
