@@ -1,38 +1,52 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, ContentType
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
     PictureRating, PictureTags, Regions, Followers, Tags
-from jet.admin import CompactInline
 
-
-# some CSS classsed for the (Jets) admin panel have been rewwritten:
-# /home/paul/.local/lib/python3.6/site-packages/jet/static/jet/css/themes/default/base.css
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'last_login')
+    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'last_login', 'is_active', 'date_joined')
     ordering = ['id']
     list_filter = ('id', 'username', 'first_name', 'last_name')
+    search_fields = ('username', 'first_name', 'last_name', 'email')
 
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
+
+class PermissionsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'content_type', 'content_type_id', 'codename')
+    ordering = ['id']
+    search_fields = ['name']
+    list_filter = ('content_type', 'name', 'id')
+
+
+admin.site.register(Permission, PermissionsAdmin)
+
+
+class ContentTypeAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(ContentType, ContentTypeAdmin)
+
+
 class UserAdminExtended(admin.ModelAdmin):
-    list_display = ('user_id', 'user', 'name', 'city', 'joined')
+    list_display = ('id', 'user_id', 'user', 'name', 'region', 'joined')
     ordering = ['user_id']
-    list_filter = ('user_id', 'user', 'skype', 'facebook_id')
-    # search_fields = ('user', 'skype')
+    list_filter = ('id', 'user_id', 'skype', 'facebook_id')
 
 
 admin.site.register(ExtendUser, UserAdminExtended)
 
+
 class PicturesAdmin(admin.ModelAdmin):
-    pass
-    list_display = ('title', 'views', 'picture_category_id', 'author', 'picture',)
-    # ordering = ['id']
-    list_filter = ('title', 'picture_user_id_id')
-    # fields = ('photo', 'name', 'owner')
-    # readonly_fields = ('grades_list', )
+    list_display = (
+        'id', 'title', 'views', 'picture_category_id', 'author', 'picture_user_id', 'picture', 'upload_date')
+    ordering = ['id']
+    list_filter = ('picture_user_id_id', 'picture_category_id', 'id')
+    search_fields = ['title']
 
 
 admin.site.register(Picture, PicturesAdmin)
@@ -62,16 +76,19 @@ admin.site.register(PictureCategory, PictureCategoryAdmin)
 
 
 class TagsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'tag')
-    # search_fields = ('tag',)
-    list_filter = ('tag',)
+    list_display = ('id', 'tag', 'slug')
+    list_filter = ('tag', 'id')
+    search_fields = ['tag', 'slug']
+    ordering = ['tag']
 
 
 admin.site.register(Tags, TagsAdmin)
 
 
 class PictureTagsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'picture_id_id', 'picture_tag_id', 'picture_tag', 'tag_date')
+    list_filter = ['id', 'picture_id_id', 'picture_tag_id']
+    ordering = ['picture_id_id', 'picture_tag_id']
 
 
 admin.site.register(PictureTags, PictureTagsAdmin)
@@ -79,7 +96,9 @@ admin.site.register(PictureTags, PictureTagsAdmin)
 
 class RegionsAdmin(admin.ModelAdmin):
     list_display = ('id', 'voivodeship_id', 'county_id', 'municipality_id', 'city')
-    list_filter = ('id', 'voivodeship_id', 'county_id', 'municipality_id', 'city')
+    list_filter = ['city', 'municipality_id', 'county_id', 'voivodeship_id', 'id']
+    ordering = ['voivodeship_id', 'county_id', 'municipality_id']
+    search_fields = ['city']
 
 
 admin.site.register(Regions, RegionsAdmin)
