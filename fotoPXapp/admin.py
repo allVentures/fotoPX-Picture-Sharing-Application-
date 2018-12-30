@@ -3,7 +3,6 @@ from django.contrib.auth.models import User, Permission, ContentType
 from fotoPXapp.models import ExtendUser, Picture, PictureCategory, PICTURE_RATING, PRIVACY, PictureComment, \
     PictureRating, PictureTags, Regions, Followers, Tags
 
-
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'last_login', 'is_active', 'date_joined')
     ordering = ['id']
@@ -84,12 +83,10 @@ class TagsAdmin(admin.ModelAdmin):
 
 admin.site.register(Tags, TagsAdmin)
 
-
 class PictureTagsAdmin(admin.ModelAdmin):
     list_display = ('id', 'picture_id_id', 'picture_tag_id', 'picture_tag', 'tag_date')
     list_filter = ['id', 'picture_id_id', 'picture_tag_id']
     ordering = ['picture_id_id', 'picture_tag_id']
-
 
 admin.site.register(PictureTags, PictureTagsAdmin)
 

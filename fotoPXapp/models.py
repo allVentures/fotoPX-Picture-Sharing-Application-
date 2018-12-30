@@ -17,33 +17,33 @@ PICTURE_RATING = (
 
 
 class Regions(models.Model):
-    voivodeship_id = models.IntegerField(blank=True, null=True)
-    county_id = models.IntegerField(blank=True, null=True)
-    municipality_id = models.IntegerField(blank=True, null=True)
-    city = models.CharField(max_length=128, blank=True, null=True)
+    voivodeship_id = models.IntegerField(null=True, blank=True)
+    county_id = models.IntegerField(null=True, blank=True)
+    municipality_id = models.IntegerField(null=True, blank=True)
+    city = models.CharField(max_length=128, null=True, blank=True)
 
     def __str__(self):
         return "%s" % (self.city)
 
 
 class ExtendUser(models.Model):
-    avatar_picture = models.ImageField(null=True)
-    region = models.ForeignKey('Regions', on_delete=models.SET_NULL, null=True)
-    email_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    phone_number = models.CharField(max_length=20, null=True)
-    phone_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    skype = models.CharField(max_length=64, null=True)
-    skype_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    instagram_id = models.CharField(max_length=64, null=True)
-    instagram_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    facebook_id = models.CharField(max_length=64, null=True)
-    facebook_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
-    website = models.URLField(null=True, max_length=128)
-    website_privacy = models.IntegerField(choices=PRIVACY, null=True, default=1)
+    avatar_picture = models.ImageField(null=True, blank=True)
+    region = models.ForeignKey('Regions', on_delete=models.SET_NULL, null=True, blank=True)
+    email_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    phone_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
+    skype = models.CharField(max_length=64, null=True, blank=True)
+    skype_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
+    instagram_id = models.CharField(max_length=64, null=True, blank=True)
+    instagram_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
+    facebook_id = models.CharField(max_length=64, null=True, blank=True)
+    facebook_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
+    website = models.URLField(null=True, blank=True, max_length=128)
+    website_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
     about_me = models.TextField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Username")
     joined = models.DateTimeField(auto_now_add=True)
-    slug = models.CharField(max_length=200, unique=True, null=True)
+    slug = models.CharField(max_length=200, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Extended User Info'
@@ -63,7 +63,7 @@ class Followers(models.Model):
 
 class PictureCategory(models.Model):
     category = models.CharField(max_length=64, unique=True)
-    category_slug = models.CharField(max_length=64, unique=True, null=True)
+    category_slug = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Picture Categories'
@@ -74,25 +74,25 @@ class PictureCategory(models.Model):
 
 class Picture(models.Model):
     picture = models.ImageField(max_length=160)
-    picture_thumbnail = models.ImageField(null=True, max_length=160)
-    th_width = models.IntegerField(null=True)
-    th_height = models.IntegerField(null=True)
-    title = models.CharField(max_length=160, null=True)
-    description = models.TextField()
-    pic_slug = models.CharField(max_length=160, null=True, unique=True)
-    views = models.IntegerField(null=True, default=0)
+    picture_thumbnail = models.ImageField(null=True, blank=True, max_length=160)
+    th_width = models.IntegerField(null=True, blank=True)
+    th_height = models.IntegerField(null=True, blank=True)
+    title = models.CharField(max_length=160, null=True, blank=True)
+    description = models.TextField( null=True, blank=True)
+    pic_slug = models.CharField(max_length=160, null=True, blank=True, unique=True)
+    views = models.IntegerField(null=True, blank=True, default=0)
     picture_category_id = models.ForeignKey(PictureCategory, on_delete=models.CASCADE, verbose_name="Picture Category")
     picture_user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Picture Author")
     upload_date = models.DateTimeField(auto_now_add=True)
     # EXIF data for picture
-    camera_make = models.CharField(max_length=64, null=True)
-    camera_model = models.CharField(max_length=64, null=True)
-    lens = models.CharField(max_length=128, null=True)
-    focal_length = models.IntegerField(null=True)
-    ISO = models.IntegerField(null=True)
-    f_stop = models.FloatField(null=True)
-    shutter_speed = models.CharField(max_length=8, null=True)
-    creation_date = models.DateTimeField(null=True)
+    camera_make = models.CharField(max_length=64, null=True, blank=True)
+    camera_model = models.CharField(max_length=64, null=True, blank=True)
+    lens = models.CharField(max_length=128, null=True, blank=True)
+    focal_length = models.IntegerField(null=True, blank=True)
+    ISO = models.IntegerField(null=True, blank=True)
+    f_stop = models.FloatField(null=True, blank=True)
+    shutter_speed = models.CharField(max_length=8, null=True, blank=True)
+    creation_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return "%s" % (self.id)
@@ -102,7 +102,7 @@ class Picture(models.Model):
 
 
 class PictureRating(models.Model):
-    rating = models.IntegerField(choices=PICTURE_RATING, null=True)
+    rating = models.IntegerField(choices=PICTURE_RATING, null=True, blank=True)
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     rater = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Picture Rater")
     rating_date = models.DateTimeField(auto_now_add=True)
@@ -112,7 +112,7 @@ class PictureRating(models.Model):
 
 
 class PictureComment(models.Model):
-    comment = models.CharField(max_length=1024, null=True)
+    comment = models.CharField(max_length=1024, null=True, blank=True)
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     commenter = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Pic Commenter")
     comment_date = models.DateTimeField(auto_now_add=True)
@@ -132,7 +132,7 @@ class PictureComment(models.Model):
 
 class Tags(models.Model):
     tag = models.CharField(max_length=64, unique=True)
-    slug = models.CharField(max_length=128, unique=True, null=True)
+    slug = models.CharField(max_length=128, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Tag list'
@@ -148,3 +148,6 @@ class PictureTags(models.Model):
 
     class Meta:
         verbose_name = 'Picture Tags'
+
+    def __str__(self):
+        return "pic_id: %s - tag:%s " % (self.picture_id, self.picture_tag)
