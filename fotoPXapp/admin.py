@@ -41,11 +41,13 @@ admin.site.register(ExtendUser, UserAdminExtended)
 
 
 class PicturesAdmin(admin.ModelAdmin):
+    model = Picture
     list_display = (
-        'id', 'title', 'views', 'picture_category_id', 'author', 'picture_user_id', 'picture', 'upload_date')
+        'id', 'title', 'views', "p_rating", 'picture_category_id', 'author', 'picture_user_id', 'picture', 'upload_date')
     ordering = ['id']
     list_filter = ('picture_user_id_id', 'picture_category_id', 'id')
     search_fields = ['title']
+    readonly_fields = ['p_rating']
 
 
 admin.site.register(Picture, PicturesAdmin)

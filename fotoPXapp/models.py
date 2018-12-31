@@ -78,8 +78,8 @@ class Picture(models.Model):
     th_width = models.IntegerField(null=True, blank=True)
     th_height = models.IntegerField(null=True, blank=True)
     title = models.CharField(max_length=160, null=True, blank=True)
-    description = models.TextField( null=True, blank=True)
-    pic_slug = models.CharField(max_length=160, null=True, blank=True, unique=True)
+    description = models.TextField(null=True, blank=True)
+    pic_slug = models.CharField(max_length=160, unique=True)
     views = models.IntegerField(null=True, blank=True, default=0)
     picture_category_id = models.ForeignKey(PictureCategory, on_delete=models.CASCADE, verbose_name="Picture Category")
     picture_user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Picture Author")
@@ -99,6 +99,15 @@ class Picture(models.Model):
 
     def author(self):
         return "%s %s" % (self.picture_user_id.first_name, self.picture_user_id.last_name)
+
+    def p_rating(self):
+        pic_rating = 0
+        counter = 0
+        all_ratings = PictureRating.objects.filter(picture_id=self.id)
+        for rating in all_ratings:
+            pic_rating = pic_rating + rating.rating
+            counter += 1
+        return round(pic_rating / counter, 1)
 
 
 class PictureRating(models.Model):
@@ -132,7 +141,7 @@ class PictureComment(models.Model):
 
 class Tags(models.Model):
     tag = models.CharField(max_length=64, unique=True)
-    slug = models.CharField(max_length=128, unique=True, null=True, blank=True)
+    slug = models.CharField(max_length=128, unique=True)
 
     class Meta:
         verbose_name = 'Tag list'
