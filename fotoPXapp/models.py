@@ -22,6 +22,10 @@ class Regions(models.Model):
     municipality_id = models.IntegerField(null=True, blank=True)
     city = models.CharField(max_length=128, null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Regions'
+        verbose_name_plural = 'Regions'
+
     def __str__(self):
         return "%s" % (self.city)
 
@@ -47,6 +51,7 @@ class ExtendUser(models.Model):
 
     class Meta:
         verbose_name = 'Extended User Info'
+        verbose_name_plural = 'Extended User Info'
 
     def __str__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
@@ -67,6 +72,7 @@ class PictureCategory(models.Model):
 
     class Meta:
         verbose_name = 'Picture Categories'
+        verbose_name_plural = 'Picture Categories'
 
     def __str__(self):
         return "%s" % (self.category)
@@ -107,7 +113,8 @@ class Picture(models.Model):
         for rating in all_ratings:
             pic_rating = pic_rating + rating.rating
             counter += 1
-        return round(pic_rating / counter, 1)
+        if counter > 0:
+            return round(pic_rating / counter, 1)
 
 
 class PictureRating(models.Model):
@@ -118,6 +125,7 @@ class PictureRating(models.Model):
 
     class Meta:
         verbose_name = 'Picture Ratings'
+        verbose_name_plural = 'Picture Ratings'
 
 
 class PictureComment(models.Model):
@@ -128,6 +136,10 @@ class PictureComment(models.Model):
 
     class Meta:
         verbose_name = 'Picture Comments'
+        verbose_name_plural = "Pictures Comments"
+
+    def __str__(self):
+        return "Comment ID: %s" % (self.id)
 
     def commenter_name(self):
         return "%s %s" % (self.commenter.last_name, self.commenter.first_name)
@@ -144,7 +156,8 @@ class Tags(models.Model):
     slug = models.CharField(max_length=128, unique=True)
 
     class Meta:
-        verbose_name = 'Tag list'
+        verbose_name = 'Tag List'
+        verbose_name_plural = 'Tag List'
 
     def __str__(self):
         return "%s" % (self.tag)
@@ -157,6 +170,7 @@ class PictureTags(models.Model):
 
     class Meta:
         verbose_name = 'Picture Tags'
+        verbose_name_plural = 'Picture Tags'
 
     def __str__(self):
         return "pic_id: %s - tag:%s " % (self.picture_id, self.picture_tag)
