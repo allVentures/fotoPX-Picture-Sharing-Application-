@@ -8,8 +8,6 @@ from django.contrib import admin
 from django.db import models
 
 
-
-
 # ------------- InLine Models----------------
 
 class ExtendedUserInline(admin.StackedInline):
@@ -19,19 +17,24 @@ class ExtendedUserInline(admin.StackedInline):
 
     def avatar(self, obj):
         return format_html('<img src="{}" style="width:280px"/>'.format(obj.avatar_picture.url))
+
     show_change_link = True
+
 
 class PictureInline(admin.StackedInline):
     model = Picture
     extra = 0
-    fields = ['title', 'picture_category_id', "pic_thumbnail", "views", "pic_rating", "pic_comments"]
-    readonly_fields = ['title', "pic_thumbnail", "views",  "pic_rating", "pic_comments"]
+    fields = ['title', 'picture_category_id', "pic_thumbnail", ("views", "pic_rating", "pic_comments")]
+    readonly_fields = ['title', "pic_thumbnail", "views", "pic_rating", "pic_comments"]
 
     def pic_thumbnail(self, obj):
-        return format_html('<a href="/admin/fotoPXapp/picture/{}/change"><img src="{}" style="width:280px"/></a>'.format(obj.id, obj.picture_thumbnail.url))
+        return format_html(
+            '<a href="/admin/fotoPXapp/picture/{}/change"><img src="{}" style="width:280px"/></a>'.format(obj.id,
+                                                                                                          obj.picture_thumbnail.url))
 
     def pic_rating(self, obj):
         return obj.p_rating()
+
     pic_rating.short_description = 'Avg Picture Rating'
 
     def pic_comments(self, obj):
@@ -40,15 +43,18 @@ class PictureInline(admin.StackedInline):
     pic_comments.short_description = 'No of Comments'
     show_change_link = True
 
+
 class UserCommentsInline(admin.StackedInline):
     model = PictureComment
     extra = 0
+    fields = ['id', 'comment', ("picture_id", "comment_date"), "pic_thumbnail"]
     readonly_fields = ['id', 'comment', "picture_id", "comment_date", "pic_thumbnail"]
     ordering = ["-comment_date"]
     show_change_link = True
 
     def pic_thumbnail(self, obj):
         return format_html('<img src="{}" style="width:150px"/>'.format(obj.picture_id.picture_thumbnail.url))
+
 
 # ------------- Standard Models----------------
 class UserAdmin(admin.ModelAdmin):
@@ -86,7 +92,6 @@ class UserAdminExtended(admin.ModelAdmin):
     list_display = ('id', 'user_id', 'user', 'name', 'region', 'joined')
     ordering = ['user_id']
     list_filter = ('id', 'user_id', 'skype', 'facebook_id')
-
 
 admin.site.register(ExtendUser, UserAdminExtended)
 
@@ -136,10 +141,11 @@ admin.site.register(PictureRating, PictureRatingAdmin)
 
 
 class PictureCommentAdmin(admin.ModelAdmin):
-    list_display = ('picture_id_id', 'commenter', 'commenter_id', 'comment_date')
+    list_display = ('picture_id_id', 'commenter', 'commenterid', 'comment_date')
     list_filter = ('picture_id', 'commenter_id')
+    fields = ['comment', ('picture_id', 'commenter'), 'pic_thumbnail', 'comment_date']
     ordering = ['picture_id_id']
-    readonly_fields = ['pic_thumbnail']
+    readonly_fields = ['pic_thumbnail', 'comment_date']
 
     formfield_overrides = {
         models.CharField: {'widget': Textarea},
@@ -147,6 +153,12 @@ class PictureCommentAdmin(admin.ModelAdmin):
 
     def pic_thumbnail(self, obj):
         return format_html('<img src="{}" style="width:250px"/>'.format(obj.picture_id.picture_thumbnail.url))
+
+    def commenterid(self, obj):
+        return obj.commenter_id
+
+    commenterid.admin_order_field = 'commenter_id'
+    commenterid.short_description = "commenter id"
 
 
 admin.site.register(PictureComment, PictureCommentAdmin)

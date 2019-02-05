@@ -46,7 +46,7 @@ class ExtendUser(models.Model):
     website_privacy = models.IntegerField(choices=PRIVACY, null=True, blank=True, default=1)
     about_me = models.TextField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Username")
-    joined = models.DateTimeField(auto_now_add=True)
+    joined = models.DateTimeField(auto_now_add=True, editable=True)
     slug = models.CharField(max_length=200, unique=True, null=True, blank=True)
 
     class Meta:
@@ -63,7 +63,7 @@ class ExtendUser(models.Model):
 class Followers(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
-    following_date = models.DateTimeField(auto_now_add=True)
+    following_date = models.DateTimeField(auto_now_add=True, editable=True)
 
 
 class PictureCategory(models.Model):
@@ -89,7 +89,7 @@ class Picture(models.Model):
     views = models.IntegerField(null=True, blank=True, default=0)
     picture_category_id = models.ForeignKey(PictureCategory, on_delete=models.CASCADE, verbose_name="Picture Category")
     picture_user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Picture Author")
-    upload_date = models.DateTimeField(auto_now_add=True)
+    upload_date = models.DateTimeField(auto_now_add=True, editable=True)
     # EXIF data for picture
     camera_make = models.CharField(max_length=64, null=True, blank=True)
     camera_model = models.CharField(max_length=64, null=True, blank=True)
@@ -121,7 +121,7 @@ class PictureRating(models.Model):
     rating = models.IntegerField(choices=PICTURE_RATING, null=True, blank=True)
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     rater = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Picture Rater")
-    rating_date = models.DateTimeField(auto_now_add=True)
+    rating_date = models.DateTimeField(auto_now_add=True, editable=True)
 
     class Meta:
         verbose_name = 'Picture Ratings'
@@ -132,7 +132,7 @@ class PictureComment(models.Model):
     comment = models.CharField(max_length=1024, null=True, blank=True)
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE)
     commenter = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Pic Commenter")
-    comment_date = models.DateTimeField(auto_now_add=True)
+    comment_date = models.DateTimeField(auto_now_add=True, editable=True)
 
     class Meta:
         verbose_name = 'Picture Comments'
@@ -166,7 +166,7 @@ class Tags(models.Model):
 class PictureTags(models.Model):
     picture_id = models.ForeignKey(Picture, on_delete=models.CASCADE, verbose_name='Pic Id')
     picture_tag = models.ForeignKey(Tags, on_delete=models.CASCADE, verbose_name='Pic Tag Name')
-    tag_date = models.DateTimeField(auto_now_add=True)
+    tag_date = models.DateTimeField(auto_now_add=True, editable=True)
 
     class Meta:
         verbose_name = 'Picture Tags'

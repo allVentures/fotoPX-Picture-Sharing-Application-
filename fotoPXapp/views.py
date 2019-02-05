@@ -14,8 +14,6 @@ from django.conf import settings
 from os import path, rename, remove
 from json import dumps
 
-from numpy import sort
-
 from fotoPXapp.models import ExtendUser, Regions, Picture, PictureCategory, PictureTags, PictureRating, \
     PictureComment, Followers, Tags
 from fotoPXapp.GlobalFunctions import ReplacePolishCharacters, RemoveSpecialCharacters, GetExifData, TextInputCleanup
