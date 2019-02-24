@@ -341,8 +341,6 @@ class AllUsers(View):
         all_users_array = []
         array_key = ""
 
-        print(sorting)
-
         if sorting == "online" and order == "dsc":
             all_users = User.objects.all().order_by('-last_login')
             sort_order[0][2] = 1

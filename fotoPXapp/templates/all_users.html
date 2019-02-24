@@ -37,8 +37,13 @@
     <div class="gridAvatar">
         {% for u in all_users_array %}
             <a href="/{{ u.0.extenduser.slug }}">
-                <img class="avatarThumbnail" data-height=280 data-width=280
-                     src="{{ u.0.extenduser.avatar_picture.url }}">
+                {% if u.0.extenduser.avatar_picture %}
+                    <img class="avatarThumbnail" data-height=280 data-width=280
+                         src="{{ u.0.extenduser.avatar_picture.url }}">
+                {% else %}
+                    <img class="avatarThumbnail" data-height=280 data-width=280
+                         src="media/no_avatar.jpg">
+                {% endif %}
                 <div class="allUsersAvatarInfo2">
                     {{ array_key }} {{ u.1 }}
                 </div>
@@ -51,11 +56,17 @@
     <div class="gridAvatar">
         {% for usr in all_users %}
             <a href="/{{ usr.extenduser.slug }}">
-                <img class="avatarThumbnail" data-height=280 data-width=280
-                     src="{{ usr.extenduser.avatar_picture.url }}">
+                {% if usr.extenduser.avatar_picture %}
+                    <img class="avatarThumbnail" data-height=280 data-width=280
+                         src="{{ usr.extenduser.avatar_picture.url }}">
+                {% else %}
+                    <img class="avatarThumbnail" data-height=280 data-width=280
+                         src="media/no_avatar.jpg">
+                {% endif %}
+
                 <div class="allUsersAvatarInfo2">
                     ostatnio online: {{ usr.last_login | date:"Y-m-d" }} <br>
-                    dołączył: {{ usr.date_joined | date:"Y-m-d"  }}
+                    dołączył: {{ usr.date_joined | date:"Y-m-d" }}
                 </div>
                 <div class="allUsersAvatarInfo">{{ usr.first_name }} {{ usr.last_name }}</div>
             </a>
