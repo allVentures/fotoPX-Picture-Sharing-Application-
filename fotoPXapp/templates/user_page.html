@@ -3,8 +3,13 @@
 <h3 class="h3FotoPx">{{ user.first_name }} {{ user.last_name }}</h3>
 <div class="row userInfoUserPage">
     <div class="col-3">
-        <img class="img-fluid userPageAvatar" src="{{ user.extenduser.avatar_picture.url }}"
-             alt="{{ user.first_name }} {{ user.last_name }}">
+        {% if user.extenduser.avatar_picture %}
+            <img class="img-fluid userPageAvatar" src="{{ user.extenduser.avatar_picture.url }}"
+                 alt="{{ user.first_name }} {{ user.last_name }}">
+        {% else %}
+            <img class="img-fluid userPageAvatar" src="/media/no_avatar.jpg"
+                 alt="{{ user.first_name }} {{ user.last_name }}">
+        {% endif %}
     </div>
     <div class="col-2 userInfoPageSubDiv">
         <h6>statystka</h6>
@@ -62,11 +67,11 @@
                 <th scope="row">facebook id:</th>
                 <td>{{ user.extenduser.facebook_id }}</td>
             </tr>
-                        <tr>
+            <tr>
                 <th scope="row">instagram id:</th>
                 <td>{{ user.extenduser.instagram_id }}</td>
             </tr>
-                        <tr>
+            <tr>
                 <th scope="row">facebook id:</th>
                 <td>{{ user.extenduser.phone_number }}</td>
             </tr>
@@ -82,7 +87,9 @@
     </div>
 </div>
 
-<h3 class="h3FotoPx"><div>zdjęcia użytkownika</div><button type="button" class="btn btn-primary">follow</button>
+<h3 class="h3FotoPx">
+    <div>zdjęcia użytkownika</div>
+    <button type="button" class="btn btn-primary">follow</button>
 </h3>
 <div class="grid">
     {% for img in pictures %}

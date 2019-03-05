@@ -63,8 +63,13 @@
             {% else %}
                 <ul class="navbar-nav loginNavBar">
                     <li class="nav-item">
-                        <a class="nav-link"
-                           href="/{{ user.extenduser.slug }}"><img class="navBarAvatar" src="{{ user.extenduser.avatar_picture.url}}" alt=""></a>
+                        <a class="nav-link" href="/{{ user.extenduser.slug }}">
+                            {% if user.extenduser.avatar_picture %}
+                                <img class="navBarAvatar" src="{{ user.extenduser.avatar_picture.url }}">
+                            {% else %}
+                                <img class="navBarAvatar" src="/media/no_avatar.jpg">
+                            {% endif %}
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"

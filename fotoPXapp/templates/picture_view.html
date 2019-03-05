@@ -45,7 +45,13 @@
             {% if user.is_authenticated %}
                 <li class="media comments" id="pictureCommentLi">
                     <a href="/{{ user.extenduser.slug }}">
-                        <img class="mr-3 commentAvatar" src="{{ user.extenduser.avatar_picture.url }}" alt="">
+                        {% if user.extenduser.avatar_picture %}
+                            <img class="mr-3 commentAvatar" src="{{ user.extenduser.avatar_picture.url }}"
+                                 alt="{{ user.first_name }} {{ user.last_name }}">
+                        {% else %}
+                            <img class="mr-3 commentAvatar" src="/media/no_avatar.jpg"
+                                 alt="{{ user.first_name }} {{ user.last_name }}">
+                        {% endif %}
                     </a>
                     <div class="addPictureComment">
                         <a href="/{{ user.extenduser.slug }}">{{ user.extenduser.name }}</a>
@@ -63,14 +69,21 @@
                     {% if commenter.user_id == comment.commenter.id %}
                         <li class="media comments">
                             <a href="/{{ commenter.slug }}">
-                                <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}" alt="">
-                            </a>
-                            <div class="pictureComment">
-                                <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
-                                <div class="media-body">
-                                    {{ comment.comment }}
+                                <a href="/{{ user.extenduser.slug }}">
+                                    {% if commenter.avatar_picture %}
+                                        <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}"
+                                             alt="{{ commenter.name }}">
+                                    {% else %}
+                                        <img class="mr-3 commentAvatar" src="/media/no_avatar.jpg"
+                                             alt="{{ commenter.name }}">
+                                    {% endif %}
+                                </a>
+                                <div class="pictureComment">
+                                    <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
+                                    <div class="media-body">
+                                        {{ comment.comment }}
+                                    </div>
                                 </div>
-                            </div>
                         </li>
                     {% endif %}
                 {% endfor %}

@@ -567,7 +567,10 @@ class PictureView(View):
             response_data = {}
             response_data["comment"] = new_comment.comment
             response_data["commenter_name"] = request.user.first_name + " " + request.user.last_name
-            response_data["commenter_avatar"] = str(request.user.extenduser.avatar_picture)
+            if request.user.extenduser.avatar_picture:
+                response_data["commenter_avatar"] = str(request.user.extenduser.avatar_picture)
+            else:
+                response_data["commenter_avatar"] = "no_avatar.jpg"
             response_data["commenter_slug"] = request.user.extenduser.slug
             return HttpResponse(dumps(response_data), content_type="application/json")
 
