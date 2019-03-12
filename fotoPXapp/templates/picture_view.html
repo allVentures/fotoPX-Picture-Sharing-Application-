@@ -69,21 +69,20 @@
                     {% if commenter.user_id == comment.commenter.id %}
                         <li class="media comments">
                             <a href="/{{ commenter.slug }}">
-                                <a href="/{{ user.extenduser.slug }}">
-                                    {% if commenter.avatar_picture %}
-                                        <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}"
-                                             alt="{{ commenter.name }}">
-                                    {% else %}
-                                        <img class="mr-3 commentAvatar" src="/media/no_avatar.jpg"
-                                             alt="{{ commenter.name }}">
-                                    {% endif %}
-                                </a>
-                                <div class="pictureComment">
-                                    <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
-                                    <div class="media-body">
-                                        {{ comment.comment }}
-                                    </div>
+                                {% if commenter.avatar_picture %}
+                                    <img class="mr-3 commentAvatar" src="{{ commenter.avatar_picture.url }}"
+                                         alt="{{ commenter.name }}">
+                                {% else %}
+                                    <img class="mr-3 commentAvatar" src="/media/no_avatar.jpg"
+                                         alt="{{ commenter.name }}">
+                                {% endif %}
+                            </a>
+                            <div class="pictureComment">
+                                <a href="/{{ commenter.slug }}">{{ commenter.name }}</a>
+                                <div class="media-body">
+                                    {{ comment.comment }}
                                 </div>
+                            </div>
                         </li>
                     {% endif %}
                 {% endfor %}

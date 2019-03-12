@@ -7,7 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db.models.aggregates import Avg, Sum
 from django.shortcuts import render, redirect
-from django.views import View
 from django.http import HttpResponse, HttpRequest, Http404
 from django.views import View
 from django.conf import settings
@@ -107,7 +106,6 @@ class user_registration(View):
             except IntegrityError:
                 errors["username"] = "wprowadzona nazwa użytkownika jest już zajęta, wybierz inną"
             if errors:
-                new_user
                 regions = Regions.objects.filter(county_id=None)
                 ctx = {"regions": regions, "form": form, "errors": errors}
                 return render(request, "user_registration.html", ctx)
@@ -470,7 +468,7 @@ class PictureView(View):
         cat_id = request.GET.get('category_id')
         tag_id = request.GET.get('tag_id')
 
-        # ---picture slider links---
+        # ---------------picture slider links--------------
         next_picture_link = None
         previous_picture_link = None
         slider_context = ""
@@ -560,7 +558,8 @@ class PictureView(View):
                 if index == (current_picture_index + 1):
                     next_picture_link = pic.picture_category_id.category_slug + "/" + pic.pic_slug + "/" + str(
                         pic.id) + "?category_id=" + str(current_category_id)
-        # ---add picture comment---
+
+        # -------------add picture comment---------------
         if picture_comment != "None":
             new_comment = PictureComment.objects.create(commenter_id=request.user.id, comment=picture_comment,
                                                         picture_id_id=id)
@@ -815,9 +814,6 @@ class AddPicture(LoginRequiredMixin, View):
         else:
             ctx = {"form": form}
             return render(request, "add_pictures.html", ctx)
-
-
-# -----------------------COMMENTS / RATINGS-----------------------------
 
 
 # ----------------------------TAGS--------------------------------------

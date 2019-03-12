@@ -31,6 +31,7 @@ class AccesstoUploadPicturePage(TestCase):
         response = self.user_client.get(reverse('add_picture'))
         self.assertEqual(response.status_code, 302)  # 302 Found redirect status response
 
+
 # ---- user login form----
 class UserLoginForm(TestCase):
     def setUp(self):
@@ -60,7 +61,6 @@ class UserLoginForm(TestCase):
         self.assertFalse(user_login)
 
 
-
 # ----------Picture upload tests--------------
 
 class PictureUpload(TestCase):
@@ -72,8 +72,8 @@ class PictureUpload(TestCase):
         user_login = self.user_client.login(username='user', password='123')
         self.assertTrue(user_login)
         self.factory = RequestFactory()
-        PictureCategory.objects.create(category="moda", category_slug="moda-fashion")
-        PictureCategory.objects.create(category="landscape", category_slug="landscape")
+        # PictureCategory.objects.create(category="moda", category_slug="moda-fashion")
+        # PictureCategory.objects.create(category="landscape", category_slug="landscape")
 
     # Valid Form Data
     def test_PictureUploadForm_valid(self):
@@ -167,11 +167,13 @@ class PictureUpload(TestCase):
         response = AddPicture.as_view()(request)
         # print(response.content)
 
-        tested_picture = Picture.objects.get(id=1)
+        last_picture = Picture.objects.all().last().id
+        tested_picture = Picture.objects.get(id=last_picture)
+
         self.assertEqual(tested_picture.title, "Piękny widok na Bangkok")
         self.assertEqual(tested_picture.picture_category_id_id, 1)
-        self.assertEqual(tested_picture.picture, "moda-piekny-widok-na-bangkok.jpg")
-        self.assertEqual(tested_picture.picture_thumbnail, "moda-piekny-widok-na-bangkok_thumb.jpg")
+        self.assertEqual(tested_picture.picture, "Krajobraz-piekny-widok-na-bangkok.jpg")
+        self.assertEqual(tested_picture.picture_thumbnail, "krajobraz-piekny-widok-na-bangkok_thumb.jpg")
         self.assertEqual(tested_picture.ISO, 200)
         self.assertEqual(tested_picture.shutter_speed, "1/5")
         self.assertEqual(tested_picture.f_stop, 6.3)
@@ -181,6 +183,7 @@ class PictureUpload(TestCase):
         self.assertEqual(tested_picture.lens, "n/a")
 
         picture_file.close()
+
 
 # ------- test copy of procuction database -------------
 
@@ -192,9 +195,9 @@ class AccessToPages(TestCase):
     def test_user_pages_access(self):
         all_users = ExtendUser.objects.all()
         for usr in all_users:
-            request = self.factory.get("/"+usr.slug)
+            request = self.factory.get("/" + usr.slug)
             request.user = self.user
-            response = user_page.as_view()(request, voivodeship = "xxx", name=usr.slug, id=usr.user_id)
+            response = user_page.as_view()(request, voivodeship="xxx", name=usr.slug, id=usr.user_id)
             print(usr.user_id, usr.slug, "=> response code:", response.status_code)
             self.assertEqual(response.status_code, 200)
 
@@ -210,6 +213,7 @@ class AccessToPages(TestCase):
             self.assertEqual(response.status_code, 200)
 
     # run tests => python3 manage.py test
+    # python3 manage.py test --keepdb
 
     # pg_dump -U postgres -W -h localhost fotopx  > fotopx.sql
     # psql -U postgres -W -f fotopx.sql -h localhost fotopxtest

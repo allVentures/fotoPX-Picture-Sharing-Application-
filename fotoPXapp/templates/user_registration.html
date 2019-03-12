@@ -9,7 +9,7 @@
                 {{ form.username.errors }}
                 {% if errors %}
                     {% for key, val in errors.items %}
-                        <p class="errorMessageUserRegist">{{ val }}</p>
+                        <p class="errorMessageUserForm">{{ val }}</p>
                     {% endfor %}
                 {% endif %}
                 <label for="{{ form.username.id_for_label }}">nazwa użytkownika</label>
